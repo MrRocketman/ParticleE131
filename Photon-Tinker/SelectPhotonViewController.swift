@@ -261,32 +261,11 @@ class SelectPhotonViewController: UITableViewController, SparkSetupMainControlle
                                 infoChange = true
                             }
                             
-                            // Check the firmware versions on both devices
-                            oldDevice.getVariable("e131FVersion", completion: { (theOldResult:AnyObject!, error:NSError?) -> Void in
-                                let oldDeviceFirmwareVersion = theOldResult as? String
-                                newDevice.getVariable("e131FVersion", completion: { (theNewResult:AnyObject!, error:NSError?) -> Void in
-                                    let newDeviceFirmwareVersion = theNewResult as? String
-                                    // See if the versions are non nil
-                                    if oldDeviceFirmwareVersion != nil && newDeviceFirmwareVersion != nil
-                                    {
-                                        // See if they are different
-                                        if oldDeviceFirmwareVersion != newDeviceFirmwareVersion
-                                        {
-                                            versionChange = true
-                                        }
-                                    }
-                                    // If one in invalid and the other is
-                                    else if oldDeviceFirmwareVersion == nil && newDeviceFirmwareVersion != nil
-                                    {
-                                        versionChange = true
-                                    }
-                                    // If one in invalid and the other is
-                                    else if oldDeviceFirmwareVersion != nil && newDeviceFirmwareVersion == nil
-                                    {
-                                        versionChange = true
-                                    }
-                                })
-                            })
+                            // If the new device is online, we need to check if it's firmware version has changed
+                            if newDevice.connected
+                            {
+                                versionChange = true
+                            }
                             
                             // Update the row if there was a change
                             if(infoChange || versionChange)
@@ -377,6 +356,8 @@ class SelectPhotonViewController: UITableViewController, SparkSetupMainControlle
             switch online
             {
             case true :
+                cell.deviceStateLabel.text = "Loading..."
+                
                 device.getVariable("e131FVersion", completion: { (theResult:AnyObject!, error:NSError?) -> Void in
                     if let firmwareVersion = theResult as? String
                     {

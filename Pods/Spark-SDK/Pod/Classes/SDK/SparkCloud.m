@@ -391,7 +391,6 @@ NSString *const kEventListenersDictIDKey = @"id";
      {
          if (completion)
          {
-             
              NSArray *responseList = responseObject;
              NSMutableArray *queryDeviceIDList = [[NSMutableArray alloc] init];
              __block NSMutableArray *deviceList = [[NSMutableArray alloc] init];
@@ -415,7 +414,6 @@ NSString *const kEventListenersDictIDKey = @"id";
                              [deviceList addObject:device];
                          }
                      }
-                     
                  }
              }
              
@@ -448,9 +446,6 @@ NSString *const kEventListenersDictIDKey = @"id";
                          completion(nil, nil);
                  }
              });
-             
-             
-             
          }
      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
          // check type of error?
@@ -469,8 +464,6 @@ NSString *const kEventListenersDictIDKey = @"id";
          }
      }];
 }
-
-
 
 -(void)generateClaimCode:(void(^)(NSString *claimCode, NSArray *userClaimedDeviceIDs, NSError *error))completion;
 {
