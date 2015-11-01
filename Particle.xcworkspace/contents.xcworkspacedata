@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:Particle.xcodeproj">
+      location = "group:/Users/James/Documents/Electronics/Particle.io/iOS/ParticleE131/ParticleE131.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

@@ -16,19 +16,24 @@ class WelcomeViewController: UIViewController, SparkSetupMainControllerDelegate 
 
         UIApplication.sharedApplication().setStatusBarStyle(.LightContent, animated: false)
         
-        var backgroundImage = UIImageView(image: UIImage(named: "imgTrianglifyBackgroundBlue"))
+        let backgroundImage = UIImageView(image: UIImage(named: "imgTrianglifyBackgroundBlue"))
         backgroundImage.frame = UIScreen.mainScreen().bounds
         backgroundImage.contentMode = .ScaleToFill;
 //        backgroundImage.alpha = 0.85
         self.view.addSubview(backgroundImage)
         self.view.sendSubviewToBack(backgroundImage)
-        var layer = self.getStartedButton.layer
+        let layer = self.getStartedButton.layer
         layer.backgroundColor = UIColor.clearColor().CGColor
         layer.borderColor = UIColor.whiteColor().CGColor
         layer.cornerRadius = 3.0
         layer.borderWidth = 2.0
-        var verStr = "V"+(NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String)
+        let verStr = "V"+(NSBundle.mainBundle().objectForInfoDictionaryKey("CFBundleShortVersionString") as! String)
         self.versionLabel.text = verStr
+        
+        let bar:UINavigationBar! =  self.navigationController?.navigationBar
+        bar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
+        bar.shadowImage = UIImage()
+        bar.backgroundColor = UIColor(red: 0.0, green: 0.3, blue: 0.5, alpha: 0.0)
         
         self.customizeSetup()
     }
@@ -43,17 +48,14 @@ class WelcomeViewController: UIViewController, SparkSetupMainControllerDelegate 
     {
         for family in UIFont.familyNames()
         {
-            print("\(family)\n")
-            for name in UIFont.fontNamesForFamilyName(family as! String)
+            print("\(family)\n", terminator: "")
+            for name in UIFont.fontNamesForFamilyName(family )
             {
-                print("   \(name)\n")
+                print("   \(name)\n", terminator: "")
             }
             
         }
     }
-    
-
-
     
     // Function will be called when setup finishes
     func sparkSetupViewController(controller: SparkSetupMainController!, didFinishWithResult result: SparkSetupMainControllerResult, device: SparkDevice!) {
@@ -94,7 +96,7 @@ class WelcomeViewController: UIViewController, SparkSetupMainControllerDelegate 
     @IBOutlet weak var versionLabel: UILabel!
     @IBAction func startButtonTapped(sender: UIButton)
     {
-        if let u = SparkCloud.sharedInstance().loggedInUsername
+        if let _ = SparkCloud.sharedInstance().loggedInUsername
         {
             self.performSegueWithIdentifier("select", sender: self)
         }

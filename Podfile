@@ -1,5 +1,5 @@
-pod 'Spark-SDK', :path => '../spark-sdk-ios'
-pod 'SparkSetup', :path => '../spark-setup-ios'
+pod 'Spark-SDK'
+pod 'SparkSetup'
 pod 'MBProgressHUD'
 pod 'TSMessages'
 pod 'PullToRefreshCoreText', '~> 0.1'

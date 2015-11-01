@@ -1,46 +1,46 @@
 PODS:
-  - AFNetworking (2.5.4):
-    - AFNetworking/NSURLConnection (= 2.5.4)
-    - AFNetworking/NSURLSession (= 2.5.4)
-    - AFNetworking/Reachability (= 2.5.4)
-    - AFNetworking/Security (= 2.5.4)
-    - AFNetworking/Serialization (= 2.5.4)
-    - AFNetworking/UIKit (= 2.5.4)
-  - AFNetworking/NSURLConnection (2.5.4):
+  - AFNetworking (2.6.1):
+    - AFNetworking/NSURLConnection (= 2.6.1)
+    - AFNetworking/NSURLSession (= 2.6.1)
+    - AFNetworking/Reachability (= 2.6.1)
+    - AFNetworking/Security (= 2.6.1)
+    - AFNetworking/Serialization (= 2.6.1)
+    - AFNetworking/UIKit (= 2.6.1)
+  - AFNetworking/NSURLConnection (2.6.1):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/NSURLSession (2.5.4):
+  - AFNetworking/NSURLSession (2.6.1):
     - AFNetworking/Reachability
     - AFNetworking/Security
     - AFNetworking/Serialization
-  - AFNetworking/Reachability (2.5.4)
-  - AFNetworking/Security (2.5.4)
-  - AFNetworking/Serialization (2.5.4)
-  - AFNetworking/UIKit (2.5.4):
+  - AFNetworking/Reachability (2.6.1)
+  - AFNetworking/Security (2.6.1)
+  - AFNetworking/Serialization (2.6.1)
+  - AFNetworking/UIKit (2.6.1):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
-  - ASValueTrackingSlider (0.10.1)
+  - ASValueTrackingSlider (0.11.2)
   - HexColors (2.2.1)
   - MBProgressHUD (0.9.1)
   - PullToRefreshCoreText (0.2)
-  - Spark-SDK (0.3.0):
-    - Spark-SDK/Helpers (= 0.3.0)
-    - Spark-SDK/SDK (= 0.3.0)
-  - Spark-SDK/Helpers (0.3.0)
-  - Spark-SDK/SDK (0.3.0):
+  - Spark-SDK (0.3.2):
+    - Spark-SDK/Helpers (= 0.3.2)
+    - Spark-SDK/SDK (= 0.3.2)
+  - Spark-SDK/Helpers (0.3.2)
+  - Spark-SDK/SDK (0.3.2):
     - AFNetworking
     - Spark-SDK/Helpers
-  - SparkSetup (0.2.0):
-    - SparkSetup/Comm (= 0.2.0)
-    - SparkSetup/Core (= 0.2.0)
-    - SparkSetup/Resources (= 0.2.0)
-  - SparkSetup/Comm (0.2.0)
-  - SparkSetup/Core (0.2.0):
+  - SparkSetup (0.3.2):
+    - SparkSetup/Comm (= 0.3.2)
+    - SparkSetup/Core (= 0.3.2)
+    - SparkSetup/Resources (= 0.3.2)
+  - SparkSetup/Comm (0.3.2)
+  - SparkSetup/Core (0.3.2):
     - Spark-SDK
     - SparkSetup/Comm
     - SparkSetup/Resources
-  - SparkSetup/Resources (0.2.0)
+  - SparkSetup/Resources (0.3.2)
   - TSMessages (0.9.12):
     - HexColors (~> 2.2.0)
 
@@ -48,24 +48,18 @@ DEPENDENCIES:
   - ASValueTrackingSlider
   - MBProgressHUD
   - PullToRefreshCoreText (~> 0.1)
-  - Spark-SDK (from `../spark-sdk-ios`)
-  - SparkSetup (from `../spark-setup-ios`)
+  - Spark-SDK
+  - SparkSetup
   - TSMessages
 
-EXTERNAL SOURCES:
-  Spark-SDK:
-    :path: ../spark-sdk-ios
-  SparkSetup:
-    :path: ../spark-setup-ios
-
 SPEC CHECKSUMS:
-  AFNetworking: 05edc0ac4c4c8cf57bcf4b84be5b0744b6d8e71e
-  ASValueTrackingSlider: 00fe601d9b5b2efeac515c1673afbf452f8e78ba
+  AFNetworking: 8e4e60500beb8bec644cf575beee72990a76d399
+  ASValueTrackingSlider: 45c9f78252da60de01d8f2afe869aaf90dd978d9
   HexColors: abfd172e329dab59888614ccba6f216cec59289d
   MBProgressHUD: c47f2c166c126cf2ce36498d80f33e754d4e93ad
   PullToRefreshCoreText: c843e71fc5ae5b033c0281067368905efd05c7b2
-  Spark-SDK: 398249f3b059b54b5868f12611cc73e490e6b78f
-  SparkSetup: 1f8d9dafcc41b847464da3293a77ec9b3d5a70d0
+  Spark-SDK: c677ff87176ba1f47b732c60440a64a169781681
+  SparkSetup: 944c9f6fc0c314e0138bebbea23dccb491cb384d
   TSMessages: c8cc7b80f2a833af533872cd02010cac061532cc
 
-COCOAPODS: 0.36.4
+COCOAPODS: 0.39.0

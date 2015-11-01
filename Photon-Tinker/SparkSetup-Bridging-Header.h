@@ -9,13 +9,10 @@
 #include "SparkSetup.h"
 
 // Other Obj-C project files
-#include "SparkDevice+pins.h"
-#include "SPKTinkerViewController.h"
 #include "Popup.h"
 
 // pods
 #include "MBProgressHUD.h"
 #include "TSMessage.h"
-#include "UIScrollView+PullToRefreshCoreText.h"
 
 #endif

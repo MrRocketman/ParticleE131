@@ -8,69 +8,23 @@
 
 import UIKit
 
-@objc protocol SettingsTableViewControllerDelegate
-{
-    func resetAllPinFunctions()
-}
-
-
 class SettingsTableViewController: UITableViewController, UIPopoverPresentationControllerDelegate {
 
     @objc var device : SparkDevice? = nil
-    var delegate : SettingsTableViewControllerDelegate? = nil
-    
-    @IBAction func closeButtonTapped(sender: AnyObject) {
-        self.dismissViewControllerAnimated(true, completion: { () -> Void in
-            //
-        })
-    }
-    
-    /*
-    func selectRowsToEnableImageTinting()
-    {
-        // ugly hack to make the color tint for the table images work
-        var ip = NSIndexPath()
-        for (var j=0;j<self.tableView.numberOfSections();j++)
-        {
-            for (var i=0;i<self.tableView.numberOfRowsInSection(j);i++)
-            {
-                ip = NSIndexPath(forRow: i, inSection: j)
-                self.tableView.selectRowAtIndexPath(ip, animated: false, scrollPosition: .None)
-//                self.tableView.deselectRowAtIndexPath(ip, animated: false)
-            }
-        }
-        self.tableView.deselectRowAtIndexPath(ip, animated: false)
-    }
-*/
-    
-
-    override func preferredStatusBarStyle() -> UIStatusBarStyle {
-        return .Default
-    }
     
     @IBOutlet weak var deviceIDlabel: UILabel!
-
-    // add a navigation bar to the popover like this:
-    func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
-        return UIModalPresentationStyle.FullScreen
-    }
     
-    func presentationController(controller: UIPresentationController, viewControllerForAdaptivePresentationStyle style: UIModalPresentationStyle) -> UIViewController? {
-        var navController = UINavigationController(rootViewController: controller.presentedViewController)
-        return navController
-    }
+    // MARK: - Initilization
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.tableView.backgroundColor = UIColor(patternImage: self.imageResize(UIImage(named: "imgTrianglifyBackgroundBlue")!, newRect: UIScreen.mainScreen().bounds))
+        
+        let bar:UINavigationBar! =  self.navigationController?.navigationBar
+        bar.setBackgroundImage(UIImage(named: "imgTrianglifyBackgroundBlue"), forBarMetrics: UIBarMetrics.Default)
+        
         TSMessage.setDefaultViewController(self.navigationController)
-        
-        
-//        self.navigationController?.navigationBar.topItem?.title = "Tinker settings"
-        self.navigationController?.navigationBar.titleTextAttributes = [ NSFontAttributeName: UIFont(name: "Gotham-Book", size: 17)!]//,  NSForegroundColorAttributeName: UIColor.blackColor()]
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
 
     override func didReceiveMemoryWarning() {
@@ -78,32 +32,34 @@ class SettingsTableViewController: UITableViewController, UIPopoverPresentationC
         // Dispose of any resources that can be recreated.
     }
     
-
-
-    
     override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
         self.tableView.reloadData()
         self.deviceIDlabel.text = self.device!.id
     }
-
+    
+    // MARK: - TableView
     
     override func tableView(tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         if section == 2 {
-            let infoDictionary = NSBundle.mainBundle().infoDictionary as! [String : AnyObject]
+            let infoDictionary = NSBundle.mainBundle().infoDictionary as [String : AnyObject]!
             let version = infoDictionary["CFBundleShortVersionString"] as! String!
             let build = infoDictionary["CFBundleVersion"] as! String!
             let label = UILabel()
-            label.text = NSLocalizedString("Particle Tinker V\(version) (\(build))", comment: "")
-            label.textColor = UIColor.grayColor()
-            label.font = UIFont(name: "Gotham-Book", size: 13)!
+            label.text = NSLocalizedString("Photon E1.31 Configuration V\(version) (\(build))", comment: "")
+            label.textColor = UIColor.blackColor()
             label.textAlignment = .Center
             return label
         } else {
             return nil
         }
     }
-
     
+    override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        
+        let header: UITableViewHeaderFooterView = view as! UITableViewHeaderFooterView
+        header.textLabel?.textColor = UIColor.blackColor()
+    }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
@@ -114,63 +70,38 @@ class SettingsTableViewController: UITableViewController, UIPopoverPresentationC
             switch indexPath.row
             {
             case 0:
-                println("copy device id")
                 UIPasteboard.generalPasteboard().string = self.device?.id
                 TSMessage.showNotificationInViewController(self.navigationController, title: "Device ID", subtitle: "Your device ID string has been copied to clipboard", type: .Success)
 
             case 1:
-                println("reset all pins")
-                self.delegate?.resetAllPinFunctions()
+                //self.delegate?.resetAllPinFunctions()
                 self.dismissViewControllerAnimated(true, completion: nil)
 //                TSMessage.showNotificationInViewController(self, title: "Pin functions", subtitle: "Your device ID string has been copied to clipboard", type: .Message)
 
             case 2:
-                println("reflash tinker")
                 if self.device!.isFlashing == false
                 {
-                    switch (self.device!.type)
+                    let bundle = NSBundle.mainBundle()
+                    let path = bundle.pathForResource(latestE131FileNameVersion, ofType: "bin")
+                    //var error:NSError?
+                    if let binary: NSData? = NSData(contentsOfURL: NSURL(fileURLWithPath: path!))
                     {
-                        
-                    case .Core:
-                        self.device!.flashKnownApp("tinker", completion: { (error:NSError!) -> Void in
+                        let filesDict = ["e131.bin" : binary!]
+                        self.device!.flashFiles(filesDict, completion: { (error:NSError!) -> Void in
                             if let e=error
                             {
                                 TSMessage.showNotificationWithTitle("Flashing error", subtitle: "Error flashing device: \(e.localizedDescription)", type: .Error)
                             }
                             else
                             {
-                                TSMessage.showNotificationWithTitle("Flashing successful", subtitle: "Please wait while your device is being flashed with Tinker firmware...", type: .Success)
+                                TSMessage.showNotificationWithTitle("Flashing successful", subtitle: "Please wait while your device is being flashed with E1.31 firmware...", type: .Success)
                                 self.device!.isFlashing = true
                             }
                         })
-                        
-                    case .Photon:
-                        let bundle = NSBundle.mainBundle()
-                        let path = bundle.pathForResource("photon-tinker", ofType: "bin")
-                        var error:NSError?
-                        if let binary: NSData? = NSData.dataWithContentsOfMappedFile(path!) as? NSData // TODO: fix depracation
-                        {
-                            let filesDict = ["tinker.bin" : binary!]
-                            self.device!.flashFiles(filesDict, completion: { (error:NSError!) -> Void in
-                                if let e=error
-                                {
-                                    TSMessage.showNotificationWithTitle("Flashing error", subtitle: "Error flashing device: \(e.localizedDescription)", type: .Error)
-                                }
-                                else
-                                {
-                                    TSMessage.showNotificationWithTitle("Flashing successful", subtitle: "Please wait while your device is being flashed with Tinker firmware...", type: .Success)
-                                    self.device!.isFlashing = true
-                                }
-                            })
-                            
-                        }
                     }
                 }
-
-                
-                
             default:
-                println("default0")
+                print("default0")
             
             }
         case 1: // documenation
@@ -178,23 +109,19 @@ class SettingsTableViewController: UITableViewController, UIPopoverPresentationC
             switch indexPath.row
             {
             case 0:
-                println("documentation: app")
+                print("documentation: app")
                 url = NSURL(string: "http://docs.particle.io/photon/tinker/#tinkering-with-tinker")
             case 1:
-                println("documentation: setup your device")
+                print("documentation: setup your device")
                 url = NSURL(string: "http://docs.particle.io/photon/connect/#connecting-your-device")
-
             case 2:
-                println("documentation: make ios app")
+                print("documentation: make ios app")
                 url = NSURL(string: "http://docs.particle.io/photon/ios/#ios-cloud-sdk")
-                
             default:
-                println("default1")
-                
+                print("default1")
             }
-        
             
-            var webVC : WebViewController = self.storyboard!.instantiateViewControllerWithIdentifier("webview") as! WebViewController
+            let webVC : WebViewController = self.storyboard!.instantiateViewControllerWithIdentifier("webview") as! WebViewController
             webVC.link = url
             webVC.linkTitle = tableView.cellForRowAtIndexPath(indexPath)?.textLabel?.text
             
@@ -205,31 +132,43 @@ class SettingsTableViewController: UITableViewController, UIPopoverPresentationC
             switch indexPath.row
             {
                 case 0:
-                println("support: community")
+                print("support: community")
                 url = NSURL(string: "http://community.particle.io/")
                 
                 case 1:
-                println("support: email")
+                print("support: email")
                 url = NSURL(string: "http://support.particle.io/hc/en-us")
                 
                 default:
-                println("default2")
+                print("default2")
             }
             
-            var webVC : WebViewController = self.storyboard!.instantiateViewControllerWithIdentifier("webview") as! WebViewController
+            let webVC : WebViewController = self.storyboard!.instantiateViewControllerWithIdentifier("webview") as! WebViewController
             webVC.link = url
             webVC.linkTitle = tableView.cellForRowAtIndexPath(indexPath)?.textLabel?.text
 
             self.presentViewController(webVC, animated: true, completion: nil)
             
         default:
-            println("default")
-
-            
-            
+            print("default")
         }
-    
-    
     }
-
+    
+    // MARK: - Other
+    
+    func imageResize(image:UIImage, newRect:CGRect) -> UIImage {
+        let scale = UIScreen.mainScreen().scale
+        UIGraphicsBeginImageContext(newRect.size)
+        UIGraphicsBeginImageContextWithOptions(newRect.size, false, scale);
+        image.drawInRect(CGRectMake(newRect.origin.x, newRect.origin.y, newRect.size.width, newRect.size.height))
+        let newImage : UIImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage
+    }
+    
+    @IBAction func closeButtonTapped(sender: AnyObject) {
+        self.dismissViewControllerAnimated(true, completion: { () -> Void in
+            //
+        })
+    }
 }
