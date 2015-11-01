@@ -1,16 +1,20 @@
 {
-  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "226FF4761DA7BAF60B81B099A12E6DC7C7A42DD7",
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "226FF4761DA7BAF60B81B099A12E6DC7C7A42DD7+++4FD8CF3",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
 
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
-    "226FF4761DA7BAF60B81B099A12E6DC7C7A42DD7" : 0,
-    "50E2A12528FDBE3D8A2B4575487E8A6E0DEFCEB0" : 0
+    "226FF4761DA7BAF60B81B099A12E6DC7C7A42DD7+++4FD8CF3" : 0,
+    "226FF4761DA7BAF60B81B099A12E6DC7C7A42DD7+++6EA67A5" : 0,
+    "50E2A12528FDBE3D8A2B4575487E8A6E0DEFCEB0+++131CC67" : 0,
+    "226FF4761DA7BAF60B81B099A12E6DC7C7A42DD7+++8FD78F3" : 0
   },
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "1FF56247-EEAE-45CF-9D98-014BDF1F7C62",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
-    "226FF4761DA7BAF60B81B099A12E6DC7C7A42DD7" : "photon-tinker-ios\/",
-    "50E2A12528FDBE3D8A2B4575487E8A6E0DEFCEB0" : "spark-sdk-ios\/"
+    "226FF4761DA7BAF60B81B099A12E6DC7C7A42DD7+++4FD8CF3" : "ParticleE131\/",
+    "226FF4761DA7BAF60B81B099A12E6DC7C7A42DD7+++6EA67A5" : "photon-tinker-ios\/",
+    "50E2A12528FDBE3D8A2B4575487E8A6E0DEFCEB0+++131CC67" : "spark-sdk-ios\/",
+    "226FF4761DA7BAF60B81B099A12E6DC7C7A42DD7+++8FD78F3" : "photon-tinker-ios\/"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "Particle",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,
@@ -19,17 +23,22 @@
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/MrRocketman\/ParticleE131.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "226FF4761DA7BAF60B81B099A12E6DC7C7A42DD7"
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "226FF4761DA7BAF60B81B099A12E6DC7C7A42DD7+++4FD8CF3"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/MrRocketman\/ParticleE131.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "226FF4761DA7BAF60B81B099A12E6DC7C7A42DD7+++6EA67A5"
     },
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/spark\/photon-tinker-ios.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "226FF4761DA7BAF60B81B099A12E6DC7C7A42DD7"
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "226FF4761DA7BAF60B81B099A12E6DC7C7A42DD7+++8FD78F3"
     },
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/spark\/spark-sdk-ios.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
-      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "50E2A12528FDBE3D8A2B4575487E8A6E0DEFCEB0"
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "50E2A12528FDBE3D8A2B4575487E8A6E0DEFCEB0+++131CC67"
     }
   ]
 }
