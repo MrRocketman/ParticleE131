@@ -10,7 +10,7 @@ import Foundation
 
 let numbersOfTableSections = 3
 let tableSectionNames = ["Configure", "Info", "Outputs"]
-let tableSectionNumberOfRows = [3, 1, 16]
+let tableSectionNumberOfRows = [2, 3, 16]
 
 let numberOfItemsToRefresh = 3
 
@@ -29,24 +29,22 @@ enum TableViewSection: Int {
 enum TableViewConfigureRows: Int {
     case Name = 0
     case UniverseSize
-    case IPAddress
-    case IPAddressPicker
+    //case IPAddress
+    //case IPAddressPicker
 }
 
 enum TableViewInfoRows: Int {
     case FirmwareVersion = 0
+    case SystemVersion
+    case IPAddress
 }
 
-class E131ConfigurationTableViewController: UITableViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
+class E131ConfigurationTableViewController: UITableViewController, UITextFieldDelegate {
     
     var device : SparkDevice!
     var itemRefreshCount = 0
     var textFieldTextColor: UIColor?
-    var ipAddressPickerIsVisible = false
     var localIPAddress: String?
-    var localIPComponents: [String] = []
-    var ipAddressPickerCellHeight: CGFloat?
-    var ipPicker: UIPickerView?
     var universeSize: Int?
     var selectedTableViewRow: Int!
     
@@ -66,9 +64,6 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
         
         let cell:LabelAndTextFieldTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("labelAndTextFieldCell") as! LabelAndTextFieldTableViewCell
         self.textFieldTextColor = cell.textField.textColor
-        
-        let cell2:IPAddressPickerkTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("ipAddressPickerCell") as! IPAddressPickerkTableViewCell
-        self.ipAddressPickerCellHeight = cell2.frame.size.height
     }
     
     override func didReceiveMemoryWarning() {
@@ -185,11 +180,6 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == TableViewSection.Configure.rawValue && self.ipAddressPickerIsVisible
-        {
-            return (tableSectionNumberOfRows[section] + 1)
-        }
-        
         return tableSectionNumberOfRows[section]
     }
     
@@ -204,14 +194,7 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        if indexPath.row == TableViewConfigureRows.IPAddressPicker.rawValue && self.ipAddressPickerIsVisible == true
-        {
-            return self.ipAddressPickerCellHeight!
-        }
-        else
-        {
-            return self.tableView.rowHeight
-        }
+        return self.tableView.rowHeight
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -265,42 +248,6 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
                 })
                 
                 masterCell = cell
-            case TableViewConfigureRows.IPAddress.rawValue : // Local IP Address Row
-                let cell:UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("rightDetailCell")! as UITableViewCell
-                cell.textLabel?.text = "Local IP Address";
-                cell.detailTextLabel?.textColor = self.textFieldTextColor
-                if self.ipAddressPickerIsVisible == true
-                {
-                    cell.detailTextLabel?.text = "Done"
-                }
-                else
-                {
-                    device.getVariable("localIP", completion: { (theResult:AnyObject!, error:NSError?) -> Void in
-                        if let localIP: String = theResult as? String
-                        {
-                            self.localIPAddress = localIP
-                            self.localIPComponents = self.localIPAddress!.componentsSeparatedByString(".")
-                            cell.detailTextLabel?.text = localIP
-                        }
-                        else
-                        {
-                            cell.detailTextLabel?.text = "Undefined"
-                        }
-                        
-                        // Finish the refresh after all variables have loaded
-                        if(++self.itemRefreshCount >= numberOfItemsToRefresh)
-                        {
-                            self.refreshControl?.endRefreshing()
-                        }
-                    })
-                }
-                masterCell = cell
-            case TableViewConfigureRows.IPAddressPicker.rawValue : // Local IP Address Picker Row
-                let cell:IPAddressPickerkTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("ipAddressPickerCell") as! IPAddressPickerkTableViewCell
-                cell.pickerView.delegate = self
-                cell.pickerView.dataSource = self
-                self.ipPicker = cell.pickerView
-                masterCell = cell
             default :
                 masterCell = nil
             }
@@ -320,6 +267,48 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
                     else
                     {
                         cell.detailTextLabel!.text = "Undefined"
+                    }
+                    
+                    // Finish the refresh after all variables have loaded
+                    if(++self.itemRefreshCount >= numberOfItemsToRefresh)
+                    {
+                        self.refreshControl?.endRefreshing()
+                    }
+                })
+                masterCell = cell
+            case TableViewInfoRows.SystemVersion.rawValue : // Firmware Version Row
+                let cell:UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("rightDetailCell")! as UITableViewCell
+                cell.textLabel?.text = "System Version";
+                cell.detailTextLabel?.textColor = UIColor.whiteColor()
+                device.getVariable("sysVersion", completion: { (theResult:AnyObject!, error:NSError?) -> Void in
+                    if let firmwareVersion: String = theResult as? String
+                    {
+                        cell.detailTextLabel!.text = firmwareVersion
+                    }
+                    else
+                    {
+                        cell.detailTextLabel!.text = "Undefined"
+                    }
+                    
+                    // Finish the refresh after all variables have loaded
+                    if(++self.itemRefreshCount >= numberOfItemsToRefresh)
+                    {
+                        self.refreshControl?.endRefreshing()
+                    }
+                })
+                masterCell = cell
+            case TableViewInfoRows.IPAddress.rawValue : // Local IP Address Row
+                let cell:UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("rightDetailCell")! as UITableViewCell
+                cell.textLabel?.text = "Local IP Address";
+                cell.detailTextLabel?.textColor = UIColor.whiteColor()
+                device.getVariable("localIP", completion: { (theResult:AnyObject!, error:NSError?) -> Void in
+                    if let localIP: String = theResult as? String
+                    {
+                        cell.detailTextLabel!.text = localIP
+                    }
+                    else
+                    {
+                        cell.detailTextLabel?.text = "Undefined"
                     }
                     
                     // Finish the refresh after all variables have loaded
@@ -366,50 +355,5 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
         {
             return nil
         }
-    }
-    
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
-        
-        switch indexPath.section
-        {
-        case TableViewSection.Configure.rawValue :
-            switch indexPath.row
-            {
-            case TableViewConfigureRows.IPAddress.rawValue :
-                if(self.ipAddressPickerIsVisible == false)
-                {
-                    self.ipAddressPickerIsVisible = true
-                    self.tableView.insertRowsAtIndexPaths([NSIndexPath.init(forRow: TableViewConfigureRows.IPAddressPicker.rawValue, inSection: TableViewSection.Configure.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
-                    self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: TableViewConfigureRows.IPAddress.rawValue, inSection: TableViewSection.Configure.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
-                }
-                else
-                {
-                    self.ipAddressPickerIsVisible = false
-                    self.tableView.deleteRowsAtIndexPaths([NSIndexPath.init(forRow: TableViewConfigureRows.IPAddressPicker.rawValue, inSection: TableViewSection.Configure.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
-                    self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: TableViewConfigureRows.IPAddress.rawValue, inSection: TableViewSection.Configure.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
-                }
-            default: break
-            }
-        default: break
-            // Nothing
-        }
-    }
-    
-    // MARK: - IPAddressPicker
-    
-    func pickerView(pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
-        
-        
-        let title = String(localIPComponents[0]) + "." + String(localIPComponents[1]) + "." + String(localIPComponents[2]) + "." + String((row + 2))
-        return NSAttributedString(string: title, attributes: [NSForegroundColorAttributeName:UIColor.whiteColor()])
-    }
-    
-    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return 253
-    }
-    
-    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
-        return 1
     }
 }
