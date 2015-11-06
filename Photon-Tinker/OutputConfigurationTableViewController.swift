@@ -73,8 +73,8 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
     var universeSize: Int!
     
     // General variables
-    var numberOfTableSectionsNormal = 9
-    var numberOfTableSectionsAbsolute = 7
+    var numberOfTableSectionsNormal = 7
+    var numberOfTableSectionsAbsolute = 5
     var tableSectionNamesNormal = ["Configure", "Pixel Type", "Number Of Pixels", "Start Universe", "Start Channel", "End Universe", "End Channel"]
     var tableSectionNamesAbsolute = ["Configure", "Pixel Type", "Number Of Pixels", "Start Channel", "End Channel"]
     var numberOfItemsToRefresh = 1

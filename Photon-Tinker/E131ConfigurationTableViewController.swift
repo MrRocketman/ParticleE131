@@ -12,7 +12,7 @@ let numbersOfTableSections = 3
 let tableSectionNames = ["Configure", "Info", "Outputs"]
 let tableSectionNumberOfRows = [2, 3, 16]
 
-let numberOfItemsToRefresh = 3
+let numberOfItemsToRefresh = 4
 
 enum TextFieldType: Int {
     case Name = 0
@@ -29,8 +29,7 @@ enum TableViewSection: Int {
 enum TableViewConfigureRows: Int {
     case Name = 0
     case UniverseSize
-    //case IPAddress
-    //case IPAddressPicker
+    case UniverseSizePicker
 }
 
 enum TableViewInfoRows: Int {
@@ -39,13 +38,19 @@ enum TableViewInfoRows: Int {
     case IPAddress
 }
 
-class E131ConfigurationTableViewController: UITableViewController, UITextFieldDelegate {
+class E131ConfigurationTableViewController: UITableViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
     
     var device : SparkDevice!
     var itemRefreshCount = 0
     var textFieldTextColor: UIColor?
     var localIPAddress: String?
     var universeSize: Int?
+    var e131FirmwareVersion: String?
+    var systemVersion: String?
+    
+    var universeSizePickerCellHeight: CGFloat?
+    var universeSizePicker: UIPickerView?
+    var universeSizePickerIsVisible = false
     var selectedTableViewRow: Int!
     
     //MARK: - Initialization
@@ -64,6 +69,9 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
         
         let cell:LabelAndTextFieldTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("labelAndTextFieldCell") as! LabelAndTextFieldTableViewCell
         self.textFieldTextColor = cell.textField.textColor
+        
+        let cell2:IPAddressPickerkTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("ipAddressPickerCell") as! IPAddressPickerkTableViewCell
+        self.universeSizePickerCellHeight = cell2.frame.size.height
     }
     
     override func didReceiveMemoryWarning() {
@@ -115,6 +123,8 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
     
     func loadDevices()
     {
+        self.itemRefreshCount = 0
+        
         dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             
             self.device.refresh({ (error:NSError?) -> Void in
@@ -125,10 +135,70 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
                     TSMessage.showNotificationWithTitle("Error", subtitle: "Error loading device, please check internet connection.", type: .Error)
                 }
                 else
-                {   
-                    dispatch_async(dispatch_get_main_queue()) {
-                        self.tableView.reloadData()
-                    }
+                {
+                    self.device.getVariable("universeSize", completion: { (theResult:AnyObject!, error:NSError?) -> Void in
+                        if let universeSize: Int = theResult as? Int
+                        {
+                            self.universeSize = universeSize
+                        }
+                        
+                        // Finish the refresh after all variables have loaded
+                        if(++self.itemRefreshCount >= numberOfItemsToRefresh)
+                        {
+                            self.refreshControl?.endRefreshing()
+                            dispatch_async(dispatch_get_main_queue()) {
+                                self.tableView.reloadData()
+                            }
+                        }
+                    })
+                    
+                    self.device.getVariable("e131FVersion", completion: { (theResult:AnyObject!, error:NSError?) -> Void in
+                        if let firmwareVersion: String = theResult as? String
+                        {
+                            self.e131FirmwareVersion = firmwareVersion
+                        }
+                        
+                        // Finish the refresh after all variables have loaded
+                        if(++self.itemRefreshCount >= numberOfItemsToRefresh)
+                        {
+                            self.refreshControl?.endRefreshing()
+                            dispatch_async(dispatch_get_main_queue()) {
+                                self.tableView.reloadData()
+                            }
+                        }
+                    })
+                    
+                    self.device.getVariable("sysVersion", completion: { (theResult:AnyObject!, error:NSError?) -> Void in
+                        if let firmwareVersion: String = theResult as? String
+                        {
+                            self.systemVersion = firmwareVersion
+                        }
+                        
+                        // Finish the refresh after all variables have loaded
+                        if(++self.itemRefreshCount >= numberOfItemsToRefresh)
+                        {
+                            self.refreshControl?.endRefreshing()
+                            dispatch_async(dispatch_get_main_queue()) {
+                                self.tableView.reloadData()
+                            }
+                        }
+                    })
+                    
+                    self.device.getVariable("localIP", completion: { (theResult:AnyObject!, error:NSError?) -> Void in
+                        if let localIP: String = theResult as? String
+                        {
+                            self.localIPAddress = localIP
+                        }
+                        
+                        // Finish the refresh after all variables have loaded
+                        if(++self.itemRefreshCount >= numberOfItemsToRefresh)
+                        {
+                            self.refreshControl?.endRefreshing()
+                            dispatch_async(dispatch_get_main_queue()) {
+                                self.tableView.reloadData()
+                            }
+                        }
+                    })
                 }
             })
         }
@@ -180,6 +250,11 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section == TableViewSection.Configure.rawValue && self.universeSizePickerIsVisible
+        {
+            return (tableSectionNumberOfRows[section] + 1)
+        }
+        
         return tableSectionNumberOfRows[section]
     }
     
@@ -194,7 +269,14 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return self.tableView.rowHeight
+        if indexPath.section == TableViewSection.Configure.rawValue && indexPath.row == TableViewConfigureRows.UniverseSizePicker.rawValue && self.universeSizePickerIsVisible == true
+        {
+            return self.universeSizePickerCellHeight!
+        }
+        else
+        {
+            return self.tableView.rowHeight
+        }
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -222,31 +304,31 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
                 }
                 masterCell = cell
             case TableViewConfigureRows.UniverseSize.rawValue : // Universe Size Row
-                let cell:LabelAndTextFieldTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("labelAndTextFieldCell") as! LabelAndTextFieldTableViewCell
-                cell.label.text = "Universe Size"
-                cell.textField.delegate = self
-                cell.textField.keyboardType = UIKeyboardType.NumberPad
-                cell.textField.tag = TextFieldType.UniverseSize.rawValue
-                cell.textField.enabled = false
-                device.getVariable("universeSize", completion: { (theResult:AnyObject!, error:NSError?) -> Void in
-                    if let universeSize: Int = theResult as? Int
+                let cell:UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("rightDetailCell")! as UITableViewCell
+                cell.textLabel?.text = "Universe Size";
+                cell.detailTextLabel?.textColor = self.textFieldTextColor
+                if self.universeSizePickerIsVisible == true
+                {
+                    cell.detailTextLabel?.text = "Done"
+                }
+                else
+                {
+                    if let universeSize = self.universeSize
                     {
-                        cell.textField.text = String(universeSize)
-                        self.universeSize = universeSize
+                        cell.detailTextLabel?.text = String(universeSize)
                     }
                     else
                     {
-                        cell.textField.text = "Undefined"
+                        cell.detailTextLabel?.text = "Undefined"
                     }
-                    cell.textField.enabled = true
-                    
-                    // Finish the refresh after all variables have loaded
-                    if(++self.itemRefreshCount >= numberOfItemsToRefresh)
-                    {
-                        self.refreshControl?.endRefreshing()
-                    }
-                })
+                }
+                masterCell = cell
                 
+            case TableViewConfigureRows.UniverseSizePicker.rawValue : // Local IP Address Picker Row
+                let cell:IPAddressPickerkTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("ipAddressPickerCell") as! IPAddressPickerkTableViewCell
+                cell.pickerView.delegate = self
+                cell.pickerView.dataSource = self
+                self.universeSizePicker = cell.pickerView
                 masterCell = cell
             default :
                 masterCell = nil
@@ -259,64 +341,40 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
                 let cell:UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("rightDetailCell")! as UITableViewCell
                 cell.textLabel?.text = "Firmware Version";
                 cell.detailTextLabel?.textColor = UIColor.whiteColor()
-                device.getVariable("e131FVersion", completion: { (theResult:AnyObject!, error:NSError?) -> Void in
-                    if let firmwareVersion: String = theResult as? String
-                    {
-                        cell.detailTextLabel!.text = firmwareVersion
-                    }
-                    else
-                    {
-                        cell.detailTextLabel!.text = "Undefined"
-                    }
-                    
-                    // Finish the refresh after all variables have loaded
-                    if(++self.itemRefreshCount >= numberOfItemsToRefresh)
-                    {
-                        self.refreshControl?.endRefreshing()
-                    }
-                })
+                if let firmwareVersion = self.e131FirmwareVersion
+                {
+                    cell.detailTextLabel!.text = firmwareVersion
+                }
+                else
+                {
+                    cell.detailTextLabel!.text = "Undefined"
+                }
                 masterCell = cell
             case TableViewInfoRows.SystemVersion.rawValue : // Firmware Version Row
                 let cell:UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("rightDetailCell")! as UITableViewCell
                 cell.textLabel?.text = "System Version";
                 cell.detailTextLabel?.textColor = UIColor.whiteColor()
-                device.getVariable("sysVersion", completion: { (theResult:AnyObject!, error:NSError?) -> Void in
-                    if let firmwareVersion: String = theResult as? String
-                    {
-                        cell.detailTextLabel!.text = firmwareVersion
-                    }
-                    else
-                    {
-                        cell.detailTextLabel!.text = "Undefined"
-                    }
-                    
-                    // Finish the refresh after all variables have loaded
-                    if(++self.itemRefreshCount >= numberOfItemsToRefresh)
-                    {
-                        self.refreshControl?.endRefreshing()
-                    }
-                })
+                if let firmwareVersion = self.systemVersion
+                {
+                    cell.detailTextLabel!.text = firmwareVersion
+                }
+                else
+                {
+                    cell.detailTextLabel!.text = "Undefined"
+                }
                 masterCell = cell
             case TableViewInfoRows.IPAddress.rawValue : // Local IP Address Row
                 let cell:UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("rightDetailCell")! as UITableViewCell
                 cell.textLabel?.text = "Local IP Address";
                 cell.detailTextLabel?.textColor = UIColor.whiteColor()
-                device.getVariable("localIP", completion: { (theResult:AnyObject!, error:NSError?) -> Void in
-                    if let localIP: String = theResult as? String
-                    {
-                        cell.detailTextLabel!.text = localIP
-                    }
-                    else
-                    {
-                        cell.detailTextLabel?.text = "Undefined"
-                    }
-                    
-                    // Finish the refresh after all variables have loaded
-                    if(++self.itemRefreshCount >= numberOfItemsToRefresh)
-                    {
-                        self.refreshControl?.endRefreshing()
-                    }
-                })
+                if let localIP = self.localIPAddress
+                {
+                    cell.detailTextLabel!.text = localIP
+                }
+                else
+                {
+                    cell.detailTextLabel?.text = "Undefined"
+                }
                 masterCell = cell
             default :
                 masterCell = nil
@@ -355,5 +413,55 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
         {
             return nil
         }
+    }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
+        
+        switch indexPath.section
+        {
+        case TableViewSection.Configure.rawValue :
+            switch indexPath.row
+            {
+            case TableViewConfigureRows.UniverseSize.rawValue :
+                if(self.universeSizePickerIsVisible == false)
+                {
+                    self.universeSizePickerIsVisible = true
+                    self.tableView.beginUpdates()
+                    self.tableView.insertRowsAtIndexPaths([NSIndexPath.init(forRow: TableViewConfigureRows.UniverseSizePicker.rawValue, inSection: TableViewSection.Configure.rawValue)], withRowAnimation: UITableViewRowAnimation.Fade)
+                    self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: TableViewConfigureRows.UniverseSize.rawValue, inSection: TableViewSection.Configure.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+                    self.tableView.endUpdates()
+                    self.universeSizePicker?.selectRow(self.universeSize!, inComponent: 0, animated: false);
+                }
+                else
+                {
+                    self.universeSizePickerIsVisible = false
+                    self.universeSize = (self.universeSizePicker?.selectedRowInComponent(0))! + 1;
+                    self.tableView.beginUpdates()
+                    self.tableView.deleteRowsAtIndexPaths([NSIndexPath.init(forRow: TableViewConfigureRows.UniverseSizePicker.rawValue, inSection: TableViewSection.Configure.rawValue)], withRowAnimation: UITableViewRowAnimation.Fade)
+                    self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: TableViewConfigureRows.UniverseSize.rawValue, inSection: TableViewSection.Configure.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+                    self.tableView.endUpdates()
+                }
+            default: break
+            }
+        default: break
+            // Nothing
+        }
+    }
+    
+    // MARK: - IPAddressPicker
+    
+    func pickerView(pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+        
+        let title = String(row + 1)
+        return NSAttributedString(string: title, attributes: [NSForegroundColorAttributeName:UIColor.whiteColor()])
+    }
+    
+    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return 512
+    }
+    
+    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+        return 1
     }
 }

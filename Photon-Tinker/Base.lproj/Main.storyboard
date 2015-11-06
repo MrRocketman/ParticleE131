@@ -721,6 +721,31 @@
                                     <segue destination="TKJ-Cy-jdw" kind="show" identifier="outputs" id="99d-Hf-4H4"/>
                                 </connections>
                             </tableViewCell>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ipAddressPickerCell" rowHeight="190" id="fTc-bq-b44" customClass="IPAddressPickerkTableViewCell" customModule="ParticleE131" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="290" width="600" height="190"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fTc-bq-b44" id="WNt-Hi-8B4">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="189"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rsf-j9-2P0">
+                                            <rect key="frame" x="0.0" y="8" width="600" height="173"/>
+                                            <animations/>
+                                        </pickerView>
+                                    </subviews>
+                                    <animations/>
+                                    <constraints>
+                                        <constraint firstItem="rsf-j9-2P0" firstAttribute="top" secondItem="WNt-Hi-8B4" secondAttribute="topMargin" id="Jmt-Cn-mZ1"/>
+                                        <constraint firstItem="rsf-j9-2P0" firstAttribute="leading" secondItem="WNt-Hi-8B4" secondAttribute="leading" id="OLB-IR-FUN"/>
+                                        <constraint firstItem="rsf-j9-2P0" firstAttribute="bottom" secondItem="WNt-Hi-8B4" secondAttribute="bottomMargin" id="P0Z-mw-v4S"/>
+                                        <constraint firstAttribute="trailing" secondItem="rsf-j9-2P0" secondAttribute="trailing" id="y2f-g8-xed"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <animations/>
+                                <connections>
+                                    <outlet property="pickerView" destination="rsf-j9-2P0" id="qYU-qY-pdL"/>
+                                </connections>
+                            </tableViewCell>
                         </prototypes>
                         <sections/>
                         <connections>
