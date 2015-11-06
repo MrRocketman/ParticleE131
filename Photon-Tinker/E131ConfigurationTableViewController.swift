@@ -431,7 +431,8 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
                     self.tableView.insertRowsAtIndexPaths([NSIndexPath.init(forRow: TableViewConfigureRows.UniverseSizePicker.rawValue, inSection: TableViewSection.Configure.rawValue)], withRowAnimation: UITableViewRowAnimation.Fade)
                     self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: TableViewConfigureRows.UniverseSize.rawValue, inSection: TableViewSection.Configure.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
                     self.tableView.endUpdates()
-                    self.universeSizePicker?.selectRow(self.universeSize!, inComponent: 0, animated: false);
+                    
+                    self.universeSizePicker?.selectRow(self.universeSize! - 1, inComponent: 0, animated: false);
                 }
                 else
                 {
