@@ -82,7 +82,7 @@ class SettingsTableViewController: UITableViewController, UIPopoverPresentationC
                 if self.device!.isFlashing == false
                 {
                     let bundle = NSBundle.mainBundle()
-                    let path = bundle.pathForResource(latestE131FileNameVersion, ofType: "bin")
+                    let path = bundle.pathForResource(("photon_firmware_" + latestE131FVersion), ofType: "bin")
                     //var error:NSError?
                     if let binary: NSData? = NSData(contentsOfURL: NSURL(fileURLWithPath: path!))
                     {

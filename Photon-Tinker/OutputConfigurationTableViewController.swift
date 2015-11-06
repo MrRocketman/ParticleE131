@@ -10,8 +10,6 @@ import Foundation
 
 let pixelTypeDescriptions = ["WS2812 (Neopixel Strips)", "WS2812B (Newer Neopixel Strips)", "WS2812B2 (Newest Neopixel Strips)", "WS2811 (Bullet/Flat Style)", "TM1803 (Radio Shack Tri-Color Strip)", "TM1829"];
 var pixelTypeValues = [0, 1, 2, 3, 4, 5];
-let gammaTypeDescriptions = ["Pixel Strip", "Bullet Pixel", "No Correction", "Candle (1900K)", "Tungsten 40W (2600K)", "Tungsten 100W (2850K)", "Halogen (3200K)", "Carbon Arc (5200K)", "High Noon Sun (5400K)", "Direct Sunlight (6000K)", "Overcast Sky (7000K)", "Clear Blue Sky (20000K)", "Warm Flourescent", "Standard Flourescent", "Cool White Flourescent", "Full Spectrum Flourescent", "Grow Light Flourescent", "Black Light Flourescent", "Mercury Vapor", "Sodium Vapor", "Metal Halide", "High Pressure Sodium"];
-let gammaTypeValues = [16756976, 16769164, 16777215, 16749353, 16762255, 16766634, 16773600, 16775924, 16777211, 16777215, 13230847, 4234495, 16774373, 16056314, 13954047, 16774386, 16773111, 10944767, 14219263, 16765362, 15924479, 16758604];
 
 enum TextFieldTypeOutput: Int {
     case NumberOfPixels = 0
@@ -22,8 +20,6 @@ enum TextFieldTypeOutput: Int {
 enum TableViewSectionNormal: Int {
     case Configure = 0
     case PixelType
-    case ColorCorrection
-    case Brightness
     case NumberOfPixels
     case StartUniverse
     case StartChannel
@@ -34,8 +30,6 @@ enum TableViewSectionNormal: Int {
 enum TableViewSectionAbsolute: Int {
     case Configure = 0
     case PixelType
-    case ColorCorrection
-    case Brightness
     case NumberOfPixels
     case StartChannel
     case EndChannel
@@ -45,10 +39,6 @@ enum TableViewRowType: Int {
     case Configure = 0
     case PixelType
     case PixelTypePicker
-    case ColorCorrection
-    case ColorCorrectionPicker
-    case Brightness
-    case BrightnessPicker
     case NumberOfPixels
     case StartUniverse
     case StartChannel
@@ -63,12 +53,16 @@ enum TableViewRowType: Int {
 enum OutputSettings: Int {
     case PixelType = 0
     case NumberOfPixels
-    case BrightnessSetting
-    case GammaSetting
     case StartUniverse
     case StartChannel
     case EndUniverse
     case EndChannel
+}
+
+enum PickerTags: Int {
+    case PixelTypePicker = 1
+    case StartChannelPicker = 2
+    case EndChannelPicker = 3
 }
 
 class OutputConfigurationTableViewController: UITableViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
@@ -81,22 +75,15 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
     // General variables
     var numberOfTableSectionsNormal = 9
     var numberOfTableSectionsAbsolute = 7
-    var tableSectionNamesNormal = ["Configure", "Pixel Type", "Color Correction", "Brightness", "Number Of Pixels", "Start Universe", "Start Channel", "End Universe", "End Channel"]
-    var tableSectionNamesAbsolute = ["Configure", "Pixel Type", "Color Correction", "Brightness", "Number Of Pixels", "Start Channel", "End Channel"]
+    var tableSectionNamesNormal = ["Configure", "Pixel Type", "Number Of Pixels", "Start Universe", "Start Channel", "End Universe", "End Channel"]
+    var tableSectionNamesAbsolute = ["Configure", "Pixel Type", "Number Of Pixels", "Start Channel", "End Channel"]
     var numberOfItemsToRefresh = 1
     var itemRefreshCount = 0
     var isAbsoluteChannelNumbering = true
     var pickerCellHeight: CGFloat!
     var pixelTypePickerIsVisible = false
-    var pixelTypePicker: UIPickerView?
-    var colorCorrectionPickerIsVisible = false
-    var colorCorrectionPicker: UIPickerView?
-    var brightnessPickerIsVisible = false
-    var brightnessPicker: UIPickerView?
     var startChannelPickerIsVisible = false
-    var startChannelPicker: UIPickerView?
     var endChannelPickerIsVisible = false
-    var endChannelPicker: UIPickerView?
     
     // Pin mapping variables
     var outputSettings: [Int?] = [nil, nil, nil, nil, nil, nil, nil, nil]
@@ -356,14 +343,6 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             {
                 return 2
             }
-            else if section == TableViewSectionAbsolute.ColorCorrection.rawValue && self.colorCorrectionPickerIsVisible
-            {
-                return 2
-            }
-            else if section == TableViewSectionAbsolute.Brightness.rawValue && self.brightnessPickerIsVisible
-            {
-                return 2
-            }
             else
             {
                 return 1
@@ -372,14 +351,6 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
         else
         {
             if section == TableViewSectionNormal.PixelType.rawValue && self.pixelTypePickerIsVisible
-            {
-                return 2
-            }
-            else if section == TableViewSectionNormal.ColorCorrection.rawValue && self.colorCorrectionPickerIsVisible
-            {
-                return 2
-            }
-            else if section == TableViewSectionNormal.Brightness.rawValue && self.brightnessPickerIsVisible
             {
                 return 2
             }
@@ -446,24 +417,6 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
                 {
                     rowType = TableViewRowType.PixelTypePicker
                 }
-            case TableViewSectionAbsolute.ColorCorrection.rawValue:
-                if indexPath.row == 0
-                {
-                    rowType = TableViewRowType.ColorCorrection
-                }
-                else
-                {
-                    rowType = TableViewRowType.ColorCorrectionPicker
-                }
-            case TableViewSectionAbsolute.Brightness.rawValue:
-                if indexPath.row == 0
-                {
-                    rowType = TableViewRowType.Brightness
-                }
-                else
-                {
-                    rowType = TableViewRowType.BrightnessPicker
-                }
             case TableViewSectionAbsolute.NumberOfPixels.rawValue:
                 rowType = TableViewRowType.NumberOfPixels
             case TableViewSectionAbsolute.StartChannel.rawValue:
@@ -487,24 +440,6 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
                 else
                 {
                     rowType = TableViewRowType.PixelTypePicker
-                }
-            case TableViewSectionNormal.ColorCorrection.rawValue:
-                if indexPath.row == 0
-                {
-                    rowType = TableViewRowType.ColorCorrection
-                }
-                else
-                {
-                    rowType = TableViewRowType.ColorCorrectionPicker
-                }
-            case TableViewSectionNormal.Brightness.rawValue:
-                if indexPath.row == 0
-                {
-                    rowType = TableViewRowType.Brightness
-                }
-                else
-                {
-                    rowType = TableViewRowType.BrightnessPicker
                 }
             case TableViewSectionNormal.NumberOfPixels.rawValue:
                 rowType = TableViewRowType.NumberOfPixels
@@ -559,63 +494,7 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             let cell:IPAddressPickerkTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("ipAddressPickerCell") as! IPAddressPickerkTableViewCell
             cell.pickerView.delegate = self
             cell.pickerView.dataSource = self
-            self.pixelTypePicker = cell.pickerView
-            masterCell = cell
-            
-        case TableViewRowType.ColorCorrection.rawValue:
-            let cell:UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("basicCell")! as UITableViewCell
-            if self.colorCorrectionPickerIsVisible == true
-            {
-                cell.textLabel!.text = "Done"
-            }
-            else
-            {
-                if let gammaString = self.outputSettings[OutputSettings.GammaSetting.rawValue]
-                {
-                    if let gammaType = gammaTypeValues.indexOf(gammaString)
-                    {
-                        cell.textLabel!.text = gammaTypeDescriptions[gammaType]
-                    }
-                    else
-                    {
-                        cell.textLabel!.text = "Invalid Color Correction"
-                    }
-                }
-            }
-            cell.textLabel!.backgroundColor = UIColor.clearColor()
-            masterCell = cell
-            
-        case TableViewRowType.ColorCorrectionPicker.rawValue:
-            let cell:IPAddressPickerkTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("ipAddressPickerCell") as! IPAddressPickerkTableViewCell
-            cell.pickerView.delegate = self
-            cell.pickerView.dataSource = self
-            self.colorCorrectionPicker = cell.pickerView
-            masterCell = cell
-        case TableViewRowType.Brightness.rawValue:
-            let cell:UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("basicCell")! as UITableViewCell
-            if self.brightnessPickerIsVisible == true
-            {
-                cell.textLabel!.text = "Done"
-            }
-            else
-            {
-                if let brightness = self.outputSettings[OutputSettings.BrightnessSetting.rawValue]
-                {
-                    cell.textLabel!.text = String(brightness)
-                }
-                else
-                {
-                    cell.textLabel!.text = "Undefined brightness"
-                }
-            }
-            cell.textLabel!.backgroundColor = UIColor.clearColor()
-            masterCell = cell
-            
-        case TableViewRowType.BrightnessPicker.rawValue:
-            let cell:IPAddressPickerkTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("ipAddressPickerCell") as! IPAddressPickerkTableViewCell
-            cell.pickerView.delegate = self
-            cell.pickerView.dataSource = self
-            self.brightnessPicker = cell.pickerView
+            cell.pickerView.tag = PickerTags.PixelTypePicker.rawValue
             masterCell = cell
             
         case TableViewRowType.NumberOfPixels.rawValue:
@@ -653,7 +532,7 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             let cell:IPAddressPickerkTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("ipAddressPickerCell") as! IPAddressPickerkTableViewCell
             cell.pickerView.delegate = self
             cell.pickerView.dataSource = self
-            self.startChannelPicker = cell.pickerView
+            cell.pickerView.tag = PickerTags.StartChannelPicker.rawValue
             masterCell = cell
             
         case TableViewRowType.StartChannelAbsolute.rawValue:
@@ -694,7 +573,7 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             let cell:IPAddressPickerkTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("ipAddressPickerCell") as! IPAddressPickerkTableViewCell
             cell.pickerView.delegate = self
             cell.pickerView.dataSource = self
-            self.endChannelPicker = cell.pickerView
+            cell.pickerView.tag = PickerTags.EndChannelPicker.rawValue
             masterCell = cell
             
         case TableViewRowType.EndChannelAbsolute.rawValue:
@@ -737,24 +616,6 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
                 {
                     rowType = TableViewRowType.PixelTypePicker
                 }
-            case TableViewSectionAbsolute.ColorCorrection.rawValue:
-                if indexPath.row == 0
-                {
-                    rowType = TableViewRowType.ColorCorrection
-                }
-                else
-                {
-                    rowType = TableViewRowType.ColorCorrectionPicker
-                }
-            case TableViewSectionAbsolute.Brightness.rawValue:
-                if indexPath.row == 0
-                {
-                    rowType = TableViewRowType.Brightness
-                }
-                else
-                {
-                    rowType = TableViewRowType.BrightnessPicker
-                }
             default:
                 rowType = TableViewRowType.Configure
             }
@@ -771,24 +632,6 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
                 else
                 {
                     rowType = TableViewRowType.PixelTypePicker
-                }
-            case TableViewSectionNormal.ColorCorrection.rawValue:
-                if indexPath.row == 0
-                {
-                    rowType = TableViewRowType.ColorCorrection
-                }
-                else
-                {
-                    rowType = TableViewRowType.ColorCorrectionPicker
-                }
-            case TableViewSectionNormal.Brightness.rawValue:
-                if indexPath.row == 0
-                {
-                    rowType = TableViewRowType.Brightness
-                }
-                else
-                {
-                    rowType = TableViewRowType.BrightnessPicker
                 }
             case TableViewSectionNormal.StartChannel.rawValue:
                 if indexPath.row == 0
@@ -828,31 +671,6 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             }
             self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.PixelType.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
             
-        case TableViewRowType.ColorCorrection.rawValue:
-            if(self.colorCorrectionPickerIsVisible == false)
-            {
-                self.colorCorrectionPickerIsVisible = true
-                self.tableView.insertRowsAtIndexPaths([NSIndexPath.init(forRow: 1, inSection: TableViewSectionNormal.ColorCorrection.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
-            }
-            else
-            {
-                self.colorCorrectionPickerIsVisible = false
-                self.tableView.deleteRowsAtIndexPaths([NSIndexPath.init(forRow: 1, inSection: TableViewSectionNormal.ColorCorrection.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
-            }
-            self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.ColorCorrection.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
-            
-        case TableViewRowType.Brightness.rawValue:
-            if(self.brightnessPickerIsVisible == false)
-            {
-                self.brightnessPickerIsVisible = true
-                self.tableView.insertRowsAtIndexPaths([NSIndexPath.init(forRow: 1, inSection: TableViewSectionNormal.Brightness.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
-            }
-            else
-            {
-                self.brightnessPickerIsVisible = false
-                self.tableView.deleteRowsAtIndexPaths([NSIndexPath.init(forRow: 1, inSection: TableViewSectionNormal.Brightness.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
-            }
-            self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.Brightness.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
         case TableViewRowType.StartChannel.rawValue:
             if(self.startChannelPickerIsVisible == false)
             {
@@ -902,17 +720,12 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
     // MARK: - IPAddressPicker
     
     func pickerView(pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
-        if pickerView == self.colorCorrectionPicker
-        {
-            let title = gammaTypeDescriptions[row]
-            return NSAttributedString(string: title, attributes: [NSForegroundColorAttributeName:UIColor.whiteColor()])
-        }
-        else if pickerView == self.pixelTypePicker
+        if pickerView.tag == PickerTags.PixelTypePicker.rawValue
         {
             let title = pixelTypeDescriptions[row]
             return NSAttributedString(string: title, attributes: [NSForegroundColorAttributeName:UIColor.whiteColor()])
         }
-        else if pickerView == self.brightnessPicker || pickerView == self.startChannelPicker || pickerView == self.endChannelPicker
+        else if pickerView.tag == PickerTags.StartChannelPicker.rawValue || pickerView.tag == PickerTags.EndChannelPicker.rawValue
         {
             let title = String(row + 1)
             return NSAttributedString(string: title, attributes: [NSForegroundColorAttributeName:UIColor.whiteColor()])
@@ -922,19 +735,11 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
     }
     
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        if pickerView == self.colorCorrectionPicker
-        {
-            return gammaTypeDescriptions.count
-        }
-        else if pickerView == self.pixelTypePicker
+        if pickerView.tag == PickerTags.PixelTypePicker.rawValue
         {
             return pixelTypeDescriptions.count
         }
-        else if pickerView == self.brightnessPicker
-        {
-            return 256
-        }
-        else if pickerView == self.startChannelPicker || pickerView == self.endChannelPicker
+        else if pickerView.tag == PickerTags.StartChannelPicker.rawValue || pickerView.tag == PickerTags.EndChannelPicker.rawValue
         {
             return self.universeSize
         }

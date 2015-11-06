@@ -11,8 +11,7 @@ import UIKit
 let deviceNamesArr : [String] = [ "aardvark", "bacon", "badger", "banjo", "bobcat", "boomer", "captain", "chicken", "cowboy", "cracker", "cranky", "crazy", "dentist", "doctor", "dozen", "easter", "ferret", "gerbil", "hacker", "hamster", "hindu", "hobo", "hoosier", "hunter", "jester", "jetpack", "kitty", "laser", "lawyer", "mighty", "monkey", "morphing", "mutant", "narwhal", "ninja", "normal", "penguin", "pirate", "pizza", "plumber", "power", "puppy", "ranger", "raptor", "robot", "scraper", "scrapple", "station", "tasty", "trochee", "turkey", "turtle", "vampire", "wombat", "zombie" ]
 let kDefaultCoreFlashingTime : Int = 30
 let kDefaultPhotonFlashingTime : Int = 15
-let latestE131FVersion = "0.0.3"
-let latestE131FileNameVersion = "photon_firmware_0_0_3"
+let latestE131FVersion = "0000000005"
 
 
 class SelectPhotonViewController: UITableViewController, SparkSetupMainControllerDelegate {
@@ -559,7 +558,7 @@ class SelectPhotonViewController: UITableViewController, SparkSetupMainControlle
                                         self.lastTappedNonTinkerDevice = nil
                                         
                                         let bundle = NSBundle.mainBundle()
-                                        let path = bundle.pathForResource(latestE131FileNameVersion, ofType: "bin")
+                                        let path = bundle.pathForResource(("photon_firmware_" + latestE131FVersion), ofType: "bin")
                                         if let binary: NSData? = NSData(contentsOfURL: NSURL(fileURLWithPath: path!))
                                         {
                                             let filesDict = ["e131.bin" : binary!]
