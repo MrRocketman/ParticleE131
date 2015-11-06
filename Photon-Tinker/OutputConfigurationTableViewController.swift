@@ -82,8 +82,11 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
     var isAbsoluteChannelNumbering = true
     var pickerCellHeight: CGFloat!
     var pixelTypePickerIsVisible = false
+    var pixelTypePicker: UIPickerView?
     var startChannelPickerIsVisible = false
+    var startChannelPicker: UIPickerView?
     var endChannelPickerIsVisible = false
+    var endChannelPicker: UIPickerView?
     
     // Pin mapping variables
     var outputSettings: [Int?] = [nil, nil, nil, nil, nil, nil, nil, nil]
@@ -495,6 +498,7 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             cell.pickerView.delegate = self
             cell.pickerView.dataSource = self
             cell.pickerView.tag = PickerTags.PixelTypePicker.rawValue
+            self.pixelTypePicker = cell.pickerView
             masterCell = cell
             
         case TableViewRowType.NumberOfPixels.rawValue:
@@ -519,7 +523,7 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             {
                 if let startChannel = self.outputSettings[OutputSettings.StartChannel.rawValue]
                 {
-                    cell.textLabel!.text = String(startChannel)
+                    cell.textLabel!.text = String(startChannel + 1)
                 }
                 else
                 {
@@ -533,6 +537,7 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             cell.pickerView.delegate = self
             cell.pickerView.dataSource = self
             cell.pickerView.tag = PickerTags.StartChannelPicker.rawValue
+            self.startChannelPicker = cell.pickerView
             masterCell = cell
             
         case TableViewRowType.StartChannelAbsolute.rawValue:
@@ -560,7 +565,7 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             {
                 if let endChannel = self.outputSettings[OutputSettings.EndChannel.rawValue]
                 {
-                    cell.textLabel!.text = String(endChannel)
+                    cell.textLabel!.text = String(endChannel + 1)
                 }
                 else
                 {
@@ -574,6 +579,7 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             cell.pickerView.delegate = self
             cell.pickerView.dataSource = self
             cell.pickerView.tag = PickerTags.EndChannelPicker.rawValue
+            self.endChannelPicker = cell.pickerView
             masterCell = cell
             
         case TableViewRowType.EndChannelAbsolute.rawValue:
@@ -673,6 +679,11 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.PixelType.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
             self.tableView.endUpdates()
             
+            if let pixelType = self.outputSettings[OutputSettings.PixelType.rawValue]
+            {
+                self.pixelTypePicker?.selectRow(pixelType, inComponent: 0, animated: false)
+            }
+            
         case TableViewRowType.StartChannel.rawValue:
             self.tableView.beginUpdates()
             if(self.startChannelPickerIsVisible == false)
@@ -688,6 +699,11 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.StartChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
             self.tableView.endUpdates()
             
+            if let startChannel = self.outputSettings[OutputSettings.StartChannel.rawValue]
+            {
+                self.startChannelPicker?.selectRow(startChannel, inComponent: 0, animated: false)
+            }
+            
         case TableViewRowType.EndChannel.rawValue:
             self.tableView.beginUpdates()
             if(self.endChannelPickerIsVisible == false)
@@ -702,6 +718,11 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             }
             self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
             self.tableView.endUpdates()
+            
+            if let endChannel = self.outputSettings[OutputSettings.EndChannel.rawValue]
+            {
+                self.endChannelPicker?.selectRow(endChannel, inComponent: 0, animated: false)
+            }
             
         default: break
         }
