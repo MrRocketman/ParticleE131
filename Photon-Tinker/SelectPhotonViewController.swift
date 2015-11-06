@@ -12,7 +12,7 @@ let deviceNamesArr : [String] = [ "aardvark", "bacon", "badger", "banjo", "bobca
 let kDefaultCoreFlashingTime : Int = 30
 let kDefaultPhotonFlashingTime : Int = 15
 let latestE131FVersion = "0.0.3"
-let latestE131FileNameVersion = "photon_firmware_0_0_2"
+let latestE131FileNameVersion = "photon_firmware_0_0_3"
 
 
 class SelectPhotonViewController: UITableViewController, SparkSetupMainControllerDelegate {
