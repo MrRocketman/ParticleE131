@@ -8,9 +8,23 @@
 
 import Foundation
 
-let numbersOfTableSections = 3
-let tableSectionNames = ["Configure", "Info", "Outputs"]
-let tableSectionNumberOfRows = [2, 3, 16]
+enum UpdateParameterCommands: Int {
+    case SystemReset = 0
+    case TestOutput
+    case Save
+    case UniverseSize
+    case ChannelMapForOutput
+    case PixelTypeForOutput
+    case NumberOfPixelsForOutput
+    case StartUniverseForOutput
+    case StartChannelForOutput
+    case EndUniverseForOutput
+    case EndChannelForOutput
+}
+
+let numbersOfTableSections = 5
+let tableSectionNames = ["", "Configure", "Info", "Outputs", ""]
+let tableSectionNumberOfRows = [1, 2, 3, 16, 1]
 
 let numberOfItemsToRefresh = 4
 
@@ -21,9 +35,11 @@ enum TextFieldType: Int {
 }
 
 enum TableViewSection: Int {
-    case Configure = 0
+    case Save = 0
+    case Configure
     case Info
     case Outputs
+    case Reboot
 }
 
 enum TableViewConfigureRows: Int {
@@ -232,12 +248,7 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
                         NSNotificationCenter.defaultCenter().postNotificationName("UpdateDeviceName", object: self.device)
                     }
                 })
-            case TextFieldType.UniverseSize:
-                print("universe")
-                // TODO: Implement universizeSize updates
-            case TextFieldType.IPAddress:
-                print("IP")
-                // TODO: Implement IPAddress updates
+            default: break
             }
         }
     }
@@ -285,6 +296,22 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
         
         switch indexPath.section
         {
+        case TableViewSection.Save.rawValue:
+            let cell = self.tableView.dequeueReusableCellWithIdentifier("basicCell")! as UITableViewCell
+            cell.textLabel?.text = "Save"
+            cell.textLabel?.textAlignment = NSTextAlignment.Center;
+            cell.textLabel?.textColor = self.textFieldTextColor;
+            cell.textLabel?.backgroundColor = UIColor.clearColor();
+            masterCell = cell
+            
+        case TableViewSection.Reboot.rawValue:
+            let cell = self.tableView.dequeueReusableCellWithIdentifier("basicCell")! as UITableViewCell
+            cell.textLabel?.text = "Reboot"
+            cell.textLabel?.textAlignment = NSTextAlignment.Center;
+            cell.textLabel?.textColor = self.textFieldTextColor;
+            cell.textLabel?.backgroundColor = UIColor.clearColor();
+            masterCell = cell
+            
         case TableViewSection.Configure.rawValue: // Configure Section
             switch indexPath.row
             {
@@ -420,6 +447,24 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
         
         switch indexPath.section
         {
+        case TableViewSection.Save.rawValue:
+            self.device.callFunction("updateParams", withArguments: [UpdateParameterCommands.UniverseSize.rawValue, self.universeSize!], completion: { (theResult:NSNumber!, error:NSError?) -> Void in
+                if theResult != nil && theResult.integerValue == 1
+                {
+                    TSMessage.showNotificationWithTitle("Success", subtitle: "Updated universeSize to " + String(self.universeSize!), type:TSMessageNotificationType.Success)
+                }
+                else
+                {
+                    TSMessage.showNotificationWithTitle("Error", subtitle: "Error updating universeSize, please check internet connection.", type: .Error)
+                }
+            })
+            
+        case TableViewSection.Reboot.rawValue:
+            self.device.callFunction("updateParams", withArguments: [UpdateParameterCommands.SystemReset.rawValue, self.universeSize!], completion: { (theResult:NSNumber!, error:NSError?) -> Void in
+                
+            })
+            TSMessage.showNotificationWithTitle("Rebooting", subtitle: "Please wait up to 30 seconds while the system reboots. Then pull down to refresh.", type:TSMessageNotificationType.Warning)
+            
         case TableViewSection.Configure.rawValue :
             switch indexPath.row
             {
