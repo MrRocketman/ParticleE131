@@ -659,42 +659,49 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
         switch rowType.rawValue
         {
         case TableViewRowType.PixelType.rawValue:
+            self.tableView.beginUpdates()
             if(self.pixelTypePickerIsVisible == false)
             {
                 self.pixelTypePickerIsVisible = true
-                self.tableView.insertRowsAtIndexPaths([NSIndexPath.init(forRow: 1, inSection: TableViewSectionNormal.PixelType.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+                self.tableView.insertRowsAtIndexPaths([NSIndexPath.init(forRow: 1, inSection: TableViewSectionNormal.PixelType.rawValue)], withRowAnimation: UITableViewRowAnimation.Fade)
             }
             else
             {
                 self.pixelTypePickerIsVisible = false
-                self.tableView.deleteRowsAtIndexPaths([NSIndexPath.init(forRow: 1, inSection: TableViewSectionNormal.PixelType.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+                self.tableView.deleteRowsAtIndexPaths([NSIndexPath.init(forRow: 1, inSection: TableViewSectionNormal.PixelType.rawValue)], withRowAnimation: UITableViewRowAnimation.Fade)
             }
             self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.PixelType.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+            self.tableView.endUpdates()
             
         case TableViewRowType.StartChannel.rawValue:
+            self.tableView.beginUpdates()
             if(self.startChannelPickerIsVisible == false)
             {
                 self.startChannelPickerIsVisible = true
-                self.tableView.insertRowsAtIndexPaths([NSIndexPath.init(forRow: 1, inSection: TableViewSectionNormal.StartChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+                self.tableView.insertRowsAtIndexPaths([NSIndexPath.init(forRow: 1, inSection: TableViewSectionNormal.StartChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Fade)
             }
             else
             {
                 self.startChannelPickerIsVisible = false
-                self.tableView.deleteRowsAtIndexPaths([NSIndexPath.init(forRow: 1, inSection: TableViewSectionNormal.StartChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+                self.tableView.deleteRowsAtIndexPaths([NSIndexPath.init(forRow: 1, inSection: TableViewSectionNormal.StartChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Fade)
             }
             self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.StartChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+            self.tableView.endUpdates()
+            
         case TableViewRowType.EndChannel.rawValue:
+            self.tableView.beginUpdates()
             if(self.endChannelPickerIsVisible == false)
             {
                 self.endChannelPickerIsVisible = true
-                self.tableView.insertRowsAtIndexPaths([NSIndexPath.init(forRow: 1, inSection: TableViewSectionNormal.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+                self.tableView.insertRowsAtIndexPaths([NSIndexPath.init(forRow: 1, inSection: TableViewSectionNormal.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Fade)
             }
             else
             {
                 self.endChannelPickerIsVisible = false
-                self.tableView.deleteRowsAtIndexPaths([NSIndexPath.init(forRow: 1, inSection: TableViewSectionNormal.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+                self.tableView.deleteRowsAtIndexPaths([NSIndexPath.init(forRow: 1, inSection: TableViewSectionNormal.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Fade)
             }
             self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+            self.tableView.endUpdates()
             
         default: break
         }
