@@ -195,37 +195,40 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
                 {
                     if text.characters.count > 0
                     {
-                        self.outputSettings[OutputSettings.NumberOfPixels.rawValue] = Int(text)!
-                        if let startChannel = self.outputSettings[OutputSettings.StartChannel.rawValue]
+                        if self.outputSettings[OutputSettings.NumberOfPixels.rawValue] != Int(text)!
                         {
-                            if let startUniverse = self.outputSettings[OutputSettings.StartUniverse.rawValue]
+                            self.outputSettings[OutputSettings.NumberOfPixels.rawValue] = Int(text)!
+                            if let startChannel = self.outputSettings[OutputSettings.StartChannel.rawValue]
                             {
-                                // Bounds check
-                                var numberOfPixels: Int!
-                                if Int(text)! >= 0
+                                if let startUniverse = self.outputSettings[OutputSettings.StartUniverse.rawValue]
                                 {
-                                    numberOfPixels = Int(text)!
-                                }
-                                else
-                                {
-                                    numberOfPixels = 0
-                                }
-                                
-                                // Update the end channel info
-                                let theoreticalEndChannel = startUniverse * self.universeSize + startChannel + numberOfPixels * 3 - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
-                                self.outputSettings[OutputSettings.EndUniverse.rawValue] = Int(theoreticalEndChannel / self.universeSize)
-                                self.outputSettings[OutputSettings.EndChannel.rawValue] = Int(theoreticalEndChannel % self.universeSize)
-                                
-                                // Update the parameters
-                                self.updateParticleChannelMap()
-                                
-                                if self.isAbsoluteChannelNumbering == true
-                                {
-                                    self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionAbsolute.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
-                                }
-                                else
-                                {
-                                    self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndUniverse.rawValue), NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+                                    // Bounds check
+                                    var numberOfPixels: Int!
+                                    if Int(text)! >= 0
+                                    {
+                                        numberOfPixels = Int(text)!
+                                    }
+                                    else
+                                    {
+                                        numberOfPixels = 0
+                                    }
+                                    
+                                    // Update the end channel info
+                                    let theoreticalEndChannel = startUniverse * self.universeSize + startChannel + numberOfPixels * 3 - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
+                                    self.outputSettings[OutputSettings.EndUniverse.rawValue] = Int(theoreticalEndChannel / self.universeSize)
+                                    self.outputSettings[OutputSettings.EndChannel.rawValue] = Int(theoreticalEndChannel % self.universeSize)
+                                    
+                                    // Update the parameters
+                                    self.updateParticleChannelMap()
+                                    
+                                    if self.isAbsoluteChannelNumbering == true
+                                    {
+                                        self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionAbsolute.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+                                    }
+                                    else
+                                    {
+                                        self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndUniverse.rawValue), NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+                                    }
                                 }
                             }
                         }
@@ -248,22 +251,25 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
                             startChannel = 1
                         }
                         
-                        // Update Start info
-                        self.outputSettings[OutputSettings.StartUniverse.rawValue] = startChannel / self.universeSize + 1 // Add 1 since universes start at 1 not 0
-                        self.outputSettings[OutputSettings.StartChannel.rawValue] = startChannel % self.universeSize - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
-                        
-                        // Update end info if we have pixels
-                        if let numberOfPixels = self.outputSettings[OutputSettings.NumberOfPixels.rawValue]
+                        if self.outputSettings[OutputSettings.StartChannel.rawValue] != startChannel % self.universeSize - 1
                         {
-                            let theoreticalEndChannel = self.outputSettings[OutputSettings.StartUniverse.rawValue]! * self.universeSize + self.outputSettings[OutputSettings.StartChannel.rawValue]! + numberOfPixels * 3 - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
-                            self.outputSettings[OutputSettings.EndUniverse.rawValue] = theoreticalEndChannel / self.universeSize
-                            self.outputSettings[OutputSettings.EndChannel.rawValue] = theoreticalEndChannel % self.universeSize
+                            // Update Start info
+                            self.outputSettings[OutputSettings.StartUniverse.rawValue] = startChannel / self.universeSize + 1 // Add 1 since universes start at 1 not 0
+                            self.outputSettings[OutputSettings.StartChannel.rawValue] = startChannel % self.universeSize - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
                             
-                            self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionAbsolute.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+                            // Update end info if we have pixels
+                            if let numberOfPixels = self.outputSettings[OutputSettings.NumberOfPixels.rawValue]
+                            {
+                                let theoreticalEndChannel = self.outputSettings[OutputSettings.StartUniverse.rawValue]! * self.universeSize + self.outputSettings[OutputSettings.StartChannel.rawValue]! + numberOfPixels * 3 - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
+                                self.outputSettings[OutputSettings.EndUniverse.rawValue] = theoreticalEndChannel / self.universeSize
+                                self.outputSettings[OutputSettings.EndChannel.rawValue] = theoreticalEndChannel % self.universeSize
+                                
+                                self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionAbsolute.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+                            }
+                            
+                            // Update the parameters
+                            self.updateParticleChannelMap()
                         }
-                        
-                        // Update the parameters
-                        self.updateParticleChannelMap()
                     }
                 }
             case TableViewRowType.StartUniverse.rawValue:
@@ -283,20 +289,23 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
                             startUniverse = 1
                         }
                         
-                        // Update the start data
-                        self.outputSettings[OutputSettings.StartUniverse.rawValue] = startUniverse
-                        
-                        // Update the end info if we have pixels
-                        if let numberOfPixels = self.outputSettings[OutputSettings.NumberOfPixels.rawValue]
+                        if self.outputSettings[OutputSettings.StartUniverse.rawValue] != startUniverse
                         {
-                            let theoreticalEndChannel = self.outputSettings[OutputSettings.StartUniverse.rawValue]! * self.universeSize + self.outputSettings[OutputSettings.StartChannel.rawValue]! + numberOfPixels * 3 - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
-                            self.outputSettings[OutputSettings.EndUniverse.rawValue] = theoreticalEndChannel / self.universeSize
+                            // Update the start data
+                            self.outputSettings[OutputSettings.StartUniverse.rawValue] = startUniverse
                             
-                            self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndUniverse.rawValue), NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+                            // Update the end info if we have pixels
+                            if let numberOfPixels = self.outputSettings[OutputSettings.NumberOfPixels.rawValue]
+                            {
+                                let theoreticalEndChannel = self.outputSettings[OutputSettings.StartUniverse.rawValue]! * self.universeSize + self.outputSettings[OutputSettings.StartChannel.rawValue]! + numberOfPixels * 3 - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
+                                self.outputSettings[OutputSettings.EndUniverse.rawValue] = theoreticalEndChannel / self.universeSize
+                                
+                                self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndUniverse.rawValue), NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+                            }
+                            
+                            // Update the parameters
+                            self.updateParticleChannelMap()
                         }
-                        
-                        // Update the parameters
-                        self.updateParticleChannelMap()
                     }
                 }
             case TableViewRowType.EndChannelAbsolute.rawValue:
@@ -316,12 +325,15 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
                             endChannel = 1
                         }
                         
-                        // Update Start info
-                        self.outputSettings[OutputSettings.EndUniverse.rawValue] = endChannel / self.universeSize + 1 // Add 1 since universes start at 1 not 0
-                        self.outputSettings[OutputSettings.EndChannel.rawValue] = endChannel % self.universeSize - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
-                        
-                        // Update the parameters
-                        self.updateParticleChannelMap()
+                        if self.outputSettings[OutputSettings.EndChannel.rawValue] != endChannel % self.universeSize - 1
+                        {
+                            // Update Start info
+                            self.outputSettings[OutputSettings.EndUniverse.rawValue] = endChannel / self.universeSize + 1 // Add 1 since universes start at 1 not 0
+                            self.outputSettings[OutputSettings.EndChannel.rawValue] = endChannel % self.universeSize - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
+                            
+                            // Update the parameters
+                            self.updateParticleChannelMap()
+                        }
                     }
                 }
             case TableViewRowType.EndUniverse.rawValue:
@@ -341,11 +353,14 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
                             endUniverse = 1
                         }
                         
-                        // Update the start data
-                        self.outputSettings[OutputSettings.EndUniverse.rawValue] = endUniverse
-                        
-                        // Update the parameters
-                        self.updateParticleParameterWith(.EndUniverseForOutput, outputSetting: .EndUniverse, string: "endUniverse")
+                        if self.outputSettings[OutputSettings.EndUniverse.rawValue] != endUniverse
+                        {
+                            // Update the start data
+                            self.outputSettings[OutputSettings.EndUniverse.rawValue] = endUniverse
+                            
+                            // Update the parameters
+                            self.updateParticleParameterWith(.EndUniverseForOutput, outputSetting: .EndUniverse, string: "endUniverse")
+                        }
                     }
                 }
             default: break
@@ -600,11 +615,14 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             else
             {
                 self.pixelTypePickerIsVisible = false
-                self.outputSettings[OutputSettings.PixelType.rawValue] = (self.pixelTypePicker?.selectedRowInComponent(0))!;
+                if self.outputSettings[OutputSettings.PixelType.rawValue] != (self.pixelTypePicker?.selectedRowInComponent(0))!
+                {
+                    self.outputSettings[OutputSettings.PixelType.rawValue] = (self.pixelTypePicker?.selectedRowInComponent(0))!;
+                    
+                    // Update the pixel type
+                    self.updateParticleParameterWith(.PixelTypeForOutput, outputSetting: .PixelType, string: "pixelType")
+                }
                 self.tableView.deleteRowsAtIndexPaths([NSIndexPath.init(forRow: 1, inSection: TableViewSectionNormal.PixelType.rawValue)], withRowAnimation: UITableViewRowAnimation.Fade)
-                
-                // Update the pixel type
-                self.updateParticleParameterWith(.PixelTypeForOutput, outputSetting: .PixelType, string: "pixelType")
             }
             self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.PixelType.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
             self.tableView.endUpdates()
@@ -626,26 +644,27 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             {
                 self.startChannelPickerIsVisible = false
                 // Update Start info
-                let startChannel = (self.startChannelPicker?.selectedRowInComponent(0))!;
-                self.outputSettings[OutputSettings.StartUniverse.rawValue] = startChannel / self.universeSize + 1 // Add 1 since universes start at 1 not 0
-                self.outputSettings[OutputSettings.StartChannel.rawValue] = startChannel % self.universeSize - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
-                
-                self.tableView.beginUpdates()
-                // Update end info if we have pixels
-                if let numberOfPixels = self.outputSettings[OutputSettings.NumberOfPixels.rawValue]
+                if self.outputSettings[OutputSettings.StartChannel.rawValue] != (self.startChannelPicker?.selectedRowInComponent(0))!
                 {
-                    let theoreticalEndChannel = self.outputSettings[OutputSettings.StartUniverse.rawValue]! * self.universeSize + self.outputSettings[OutputSettings.StartChannel.rawValue]! + numberOfPixels * 3 - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
-                    self.outputSettings[OutputSettings.EndUniverse.rawValue] = theoreticalEndChannel / self.universeSize
-                    self.outputSettings[OutputSettings.EndChannel.rawValue] = theoreticalEndChannel % self.universeSize
+                    self.outputSettings[OutputSettings.StartChannel.rawValue] = (self.startChannelPicker?.selectedRowInComponent(0))!;
                     
-                    self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionAbsolute.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+                    self.tableView.beginUpdates()
+                    // Update end info if we have pixels
+                    if let numberOfPixels = self.outputSettings[OutputSettings.NumberOfPixels.rawValue]
+                    {
+                        let theoreticalEndChannel = self.outputSettings[OutputSettings.StartUniverse.rawValue]! * self.universeSize + self.outputSettings[OutputSettings.StartChannel.rawValue]! + numberOfPixels * 3 - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
+                        self.outputSettings[OutputSettings.EndUniverse.rawValue] = theoreticalEndChannel / self.universeSize
+                        self.outputSettings[OutputSettings.EndChannel.rawValue] = theoreticalEndChannel % self.universeSize
+                        
+                        self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionAbsolute.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+                    }
+                    
+                    // Update the parameters
+                    self.updateParticleChannelMap()
                 }
                 
                 self.tableView.deleteRowsAtIndexPaths([NSIndexPath.init(forRow: 1, inSection: TableViewSectionNormal.StartChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Fade)
                 self.tableView.endUpdates()
-                
-                // Update the parameters
-                self.updateParticleChannelMap()
             }
             self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.StartChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
             self.tableView.endUpdates()
@@ -666,10 +685,14 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             else
             {
                 self.endChannelPickerIsVisible = false
-                self.outputSettings[OutputSettings.EndChannel.rawValue] = (self.endChannelPicker?.selectedRowInComponent(0))!;
+                if self.outputSettings[OutputSettings.EndChannel.rawValue] != (self.endChannelPicker?.selectedRowInComponent(0))!
+                {
+                    self.outputSettings[OutputSettings.EndChannel.rawValue] = (self.endChannelPicker?.selectedRowInComponent(0))!;
+                    // Update the endChannel
+                    self.updateParticleParameterWith(.EndChannelForOutput, outputSetting: .EndChannel, string: "endChannel")
+                }
+                
                 self.tableView.deleteRowsAtIndexPaths([NSIndexPath.init(forRow: 1, inSection: TableViewSectionNormal.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Fade)
-                // Update the endChannel
-                self.updateParticleParameterWith(.EndChannelForOutput, outputSetting: .EndChannel, string: "endChannel")
             }
             self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
             self.tableView.endUpdates()
