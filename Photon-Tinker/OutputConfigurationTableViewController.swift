@@ -18,7 +18,8 @@ enum TextFieldTypeOutput: Int {
 }
 
 enum TableViewSectionNormal: Int {
-    case Configure = 0
+    case Save = 0
+    case Configure
     case PixelType
     case NumberOfPixels
     case StartUniverse
@@ -28,7 +29,8 @@ enum TableViewSectionNormal: Int {
 }
 
 enum TableViewSectionAbsolute: Int {
-    case Configure = 0
+    case Save = 0
+    case Configure
     case PixelType
     case NumberOfPixels
     case StartChannel
@@ -36,7 +38,8 @@ enum TableViewSectionAbsolute: Int {
 }
 
 enum TableViewRowType: Int {
-    case Configure = 0
+    case Save = 0
+    case Configure
     case PixelType
     case PixelTypePicker
     case NumberOfPixels
@@ -73,10 +76,10 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
     var universeSize: Int!
     
     // General variables
-    var numberOfTableSectionsNormal = 7
-    var numberOfTableSectionsAbsolute = 5
-    var tableSectionNamesNormal = ["Configure", "Pixel Type", "Number Of Pixels", "Start Universe", "Start Channel", "End Universe", "End Channel"]
-    var tableSectionNamesAbsolute = ["Configure", "Pixel Type", "Number Of Pixels", "Start Channel", "End Channel"]
+    var numberOfTableSectionsNormal = 8
+    var numberOfTableSectionsAbsolute = 6
+    var tableSectionNamesNormal = ["", "Configure", "Pixel Type", "Number Of Pixels", "Start Universe", "Start Channel", "End Universe", "End Channel"]
+    var tableSectionNamesAbsolute = ["", "Configure", "Pixel Type", "Number Of Pixels", "Start Channel", "End Channel"]
     var numberOfItemsToRefresh = 1
     var itemRefreshCount = 0
     var isAbsoluteChannelNumbering = true
@@ -213,14 +216,16 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
                                 self.outputSettings[OutputSettings.EndUniverse.rawValue] = Int(theoreticalEndChannel / self.universeSize)
                                 self.outputSettings[OutputSettings.EndChannel.rawValue] = Int(theoreticalEndChannel % self.universeSize)
                                 
+                                // Update the parameters
+                                self.updateParticleChannelMap()
+                                
                                 if self.isAbsoluteChannelNumbering == true
                                 {
                                     self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionAbsolute.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
                                 }
                                 else
                                 {
-                                    self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndUniverse.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
-                                    self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+                                    self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndUniverse.rawValue), NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
                                 }
                             }
                         }
@@ -256,40 +261,11 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
                             
                             self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionAbsolute.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
                         }
+                        
+                        // Update the parameters
+                        self.updateParticleChannelMap()
                     }
                 }
-            /*case TableViewRowType.StartChannel.rawValue:
-                // Auto update the end channel based on the number of pixels
-                if let text = textField.text
-                {
-                    if text.characters.count > 0
-                    {
-                        // Bounds check
-                        var startChannel: Int!
-                        if Int(text)! > self.universeSize
-                        {
-                            startChannel = self.universeSize
-                        }
-                        else
-                        {
-                            startChannel = Int(text)!
-                        }
-                        
-                        // Update start info
-                        self.outputSettings[OutputSettings.StartUniverse.rawValue] = startChannel / self.universeSize + 1 // Add 1 since universes start at 1 not 0
-                        self.outputSettings[OutputSettings.StartChannel.rawValue] = startChannel % self.universeSize - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
-                        // Update end info if we have pixels
-                        if let numberOfPixels = self.outputSettings[OutputSettings.NumberOfPixels.rawValue]
-                        {
-                            let theoreticalEndChannel = self.outputSettings[OutputSettings.StartUniverse.rawValue]! * self.universeSize + self.outputSettings[OutputSettings.StartChannel.rawValue]! + numberOfPixels * 3 - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
-                            self.outputSettings[OutputSettings.EndUniverse.rawValue] = theoreticalEndChannel / self.universeSize
-                            self.outputSettings[OutputSettings.EndChannel.rawValue] = theoreticalEndChannel % self.universeSize
-                            
-                            self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndUniverse.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
-                            self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
-                        }
-                    }
-                }*/
             case TableViewRowType.StartUniverse.rawValue:
                 // Auto update the end channel based on the number of pixels
                 if let text = textField.text
@@ -316,9 +292,60 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
                             let theoreticalEndChannel = self.outputSettings[OutputSettings.StartUniverse.rawValue]! * self.universeSize + self.outputSettings[OutputSettings.StartChannel.rawValue]! + numberOfPixels * 3 - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
                             self.outputSettings[OutputSettings.EndUniverse.rawValue] = theoreticalEndChannel / self.universeSize
                             
-                            self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndUniverse.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
-                            self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+                            self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndUniverse.rawValue), NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
                         }
+                        
+                        // Update the parameters
+                        self.updateParticleChannelMap()
+                    }
+                }
+            case TableViewRowType.EndChannelAbsolute.rawValue:
+                // Auto update the end channel based on the number of pixels
+                if let text = textField.text
+                {
+                    if text.characters.count > 0
+                    {
+                        // Bounds check
+                        var endChannel: Int!
+                        if Int(text)! > 0
+                        {
+                            endChannel = Int(text)!
+                        }
+                        else
+                        {
+                            endChannel = 1
+                        }
+                        
+                        // Update Start info
+                        self.outputSettings[OutputSettings.EndUniverse.rawValue] = endChannel / self.universeSize + 1 // Add 1 since universes start at 1 not 0
+                        self.outputSettings[OutputSettings.EndChannel.rawValue] = endChannel % self.universeSize - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
+                        
+                        // Update the parameters
+                        self.updateParticleChannelMap()
+                    }
+                }
+            case TableViewRowType.EndUniverse.rawValue:
+                // Auto update the end channel based on the number of pixels
+                if let text = textField.text
+                {
+                    if text.characters.count > 0
+                    {
+                        // Bounds check
+                        var endUniverse: Int!
+                        if Int(text)! > 0
+                        {
+                            endUniverse = Int(text)!
+                        }
+                        else
+                        {
+                            endUniverse = 1
+                        }
+                        
+                        // Update the start data
+                        self.outputSettings[OutputSettings.EndUniverse.rawValue] = endUniverse
+                        
+                        // Update the parameters
+                        self.updateParticleParameterWith(.EndUniverseForOutput, outputSetting: .EndUniverse, string: "endUniverse")
                     }
                 }
             default: break
@@ -404,76 +431,16 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
         
         var masterCell : UITableViewCell?
         
-        var rowType: TableViewRowType!
-        if self.isAbsoluteChannelNumbering == true
-        {
-            switch indexPath.section
-            {
-            case TableViewSectionAbsolute.Configure.rawValue:
-                rowType = TableViewRowType.Configure
-            case TableViewSectionAbsolute.PixelType.rawValue:
-                if indexPath.row == 0
-                {
-                    rowType = TableViewRowType.PixelType
-                }
-                else
-                {
-                    rowType = TableViewRowType.PixelTypePicker
-                }
-            case TableViewSectionAbsolute.NumberOfPixels.rawValue:
-                rowType = TableViewRowType.NumberOfPixels
-            case TableViewSectionAbsolute.StartChannel.rawValue:
-                rowType = TableViewRowType.StartChannelAbsolute
-            case TableViewSectionAbsolute.EndChannel.rawValue:
-                rowType = TableViewRowType.EndChannelAbsolute
-            default: break
-            }
-        }
-        else
-        {
-            switch indexPath.section
-            {
-            case TableViewSectionNormal.Configure.rawValue:
-                rowType = TableViewRowType.Configure
-            case TableViewSectionNormal.PixelType.rawValue:
-                if indexPath.row == 0
-                {
-                    rowType = TableViewRowType.PixelType
-                }
-                else
-                {
-                    rowType = TableViewRowType.PixelTypePicker
-                }
-            case TableViewSectionNormal.NumberOfPixels.rawValue:
-                rowType = TableViewRowType.NumberOfPixels
-            case TableViewSectionNormal.StartUniverse.rawValue:
-                rowType = TableViewRowType.StartUniverse
-            case TableViewSectionNormal.StartChannel.rawValue:
-                if indexPath.row == 0
-                {
-                    rowType = TableViewRowType.StartChannel
-                }
-                else
-                {
-                    rowType = TableViewRowType.StartChannelPicker
-                }
-            case TableViewSectionNormal.EndUniverse.rawValue:
-                rowType = TableViewRowType.EndUniverse
-            case TableViewSectionNormal.EndChannel.rawValue:
-                if indexPath.row == 0
-                {
-                    rowType = TableViewRowType.EndChannel
-                }
-                else
-                {
-                    rowType = TableViewRowType.EndChannelPicker
-                }
-            default: break
-            }
-        }
+        let rowType = self.tableViewRowTypeForIndexPath(indexPath)
         
         switch rowType.rawValue
         {
+        case TableViewRowType.Save.rawValue:
+            let cell = self.tableView.dequeueReusableCellWithIdentifier("basicCell")! as UITableViewCell
+            cell.textLabel?.text = "Save"
+            cell.textLabel?.textAlignment = NSTextAlignment.Center;
+            cell.textLabel?.backgroundColor = UIColor.clearColor();
+            masterCell = cell
         case TableViewRowType.Configure.rawValue:
             let cell:LabelAndSwitchTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("labelAndSwitchCell") as! LabelAndSwitchTableViewCell
             masterCell = cell
@@ -608,62 +575,21 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
         //self.performSegueWithIdentifier("outputs", sender: self)
         self.tableView.deselectRowAtIndexPath(indexPath, animated: true)
         
-        var rowType: TableViewRowType!
-        if self.isAbsoluteChannelNumbering == true
-        {
-            switch indexPath.section
-            {
-            case TableViewSectionAbsolute.PixelType.rawValue:
-                if indexPath.row == 0
-                {
-                    rowType = TableViewRowType.PixelType
-                }
-                else
-                {
-                    rowType = TableViewRowType.PixelTypePicker
-                }
-            default:
-                rowType = TableViewRowType.Configure
-            }
-        }
-        else
-        {
-            switch indexPath.section
-            {
-            case TableViewSectionNormal.PixelType.rawValue:
-                if indexPath.row == 0
-                {
-                    rowType = TableViewRowType.PixelType
-                }
-                else
-                {
-                    rowType = TableViewRowType.PixelTypePicker
-                }
-            case TableViewSectionNormal.StartChannel.rawValue:
-                if indexPath.row == 0
-                {
-                    rowType = TableViewRowType.StartChannel
-                }
-                else
-                {
-                    rowType = TableViewRowType.StartChannelPicker
-                }
-            case TableViewSectionNormal.EndChannel.rawValue:
-                if indexPath.row == 0
-                {
-                    rowType = TableViewRowType.EndChannel
-                }
-                else
-                {
-                    rowType = TableViewRowType.EndChannelPicker
-                }
-            default:
-                rowType = TableViewRowType.Configure
-            }
-        }
+        let rowType = self.tableViewRowTypeForIndexPath(indexPath)
         
         switch rowType.rawValue
         {
+        case TableViewRowType.Save.rawValue:
+            self.device.callFunction("updateParams", withArguments: [UpdateParameterCommands.Save.rawValue, self.universeSize!], completion: { (theResult:NSNumber!, error:NSError?) -> Void in
+                if theResult != nil && theResult.integerValue == 1
+                {
+                    TSMessage.showNotificationWithTitle("Success", subtitle: "Saved changes to EEPROM", type:TSMessageNotificationType.Success)
+                }
+                else
+                {
+                    TSMessage.showNotificationWithTitle("Error", subtitle: "Error saving changes, please check internet connection.", type: .Error)
+                }
+            })
         case TableViewRowType.PixelType.rawValue:
             self.tableView.beginUpdates()
             if(self.pixelTypePickerIsVisible == false)
@@ -674,11 +600,16 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             else
             {
                 self.pixelTypePickerIsVisible = false
+                self.outputSettings[OutputSettings.PixelType.rawValue] = (self.pixelTypePicker?.selectedRowInComponent(0))!;
                 self.tableView.deleteRowsAtIndexPaths([NSIndexPath.init(forRow: 1, inSection: TableViewSectionNormal.PixelType.rawValue)], withRowAnimation: UITableViewRowAnimation.Fade)
+                
+                // Update the pixel type
+                self.updateParticleParameterWith(.PixelTypeForOutput, outputSetting: .PixelType, string: "pixelType")
             }
             self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.PixelType.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
             self.tableView.endUpdates()
             
+            // Select the current row in the picker
             if let pixelType = self.outputSettings[OutputSettings.PixelType.rawValue]
             {
                 self.pixelTypePicker?.selectRow(pixelType, inComponent: 0, animated: false)
@@ -694,11 +625,32 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             else
             {
                 self.startChannelPickerIsVisible = false
+                // Update Start info
+                let startChannel = (self.startChannelPicker?.selectedRowInComponent(0))!;
+                self.outputSettings[OutputSettings.StartUniverse.rawValue] = startChannel / self.universeSize + 1 // Add 1 since universes start at 1 not 0
+                self.outputSettings[OutputSettings.StartChannel.rawValue] = startChannel % self.universeSize - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
+                
+                self.tableView.beginUpdates()
+                // Update end info if we have pixels
+                if let numberOfPixels = self.outputSettings[OutputSettings.NumberOfPixels.rawValue]
+                {
+                    let theoreticalEndChannel = self.outputSettings[OutputSettings.StartUniverse.rawValue]! * self.universeSize + self.outputSettings[OutputSettings.StartChannel.rawValue]! + numberOfPixels * 3 - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
+                    self.outputSettings[OutputSettings.EndUniverse.rawValue] = theoreticalEndChannel / self.universeSize
+                    self.outputSettings[OutputSettings.EndChannel.rawValue] = theoreticalEndChannel % self.universeSize
+                    
+                    self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionAbsolute.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
+                }
+                
                 self.tableView.deleteRowsAtIndexPaths([NSIndexPath.init(forRow: 1, inSection: TableViewSectionNormal.StartChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Fade)
+                self.tableView.endUpdates()
+                
+                // Update the parameters
+                self.updateParticleChannelMap()
             }
             self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.StartChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
             self.tableView.endUpdates()
             
+            // Select the current row in the picker
             if let startChannel = self.outputSettings[OutputSettings.StartChannel.rawValue]
             {
                 self.startChannelPicker?.selectRow(startChannel, inComponent: 0, animated: false)
@@ -714,11 +666,15 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             else
             {
                 self.endChannelPickerIsVisible = false
+                self.outputSettings[OutputSettings.EndChannel.rawValue] = (self.endChannelPicker?.selectedRowInComponent(0))!;
                 self.tableView.deleteRowsAtIndexPaths([NSIndexPath.init(forRow: 1, inSection: TableViewSectionNormal.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Fade)
+                // Update the endChannel
+                self.updateParticleParameterWith(.EndChannelForOutput, outputSetting: .EndChannel, string: "endChannel")
             }
             self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
             self.tableView.endUpdates()
             
+            // Select the current row in the picker
             if let endChannel = self.outputSettings[OutputSettings.EndChannel.rawValue]
             {
                 self.endChannelPicker?.selectRow(endChannel, inComponent: 0, animated: false)
@@ -726,6 +682,84 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             
         default: break
         }
+    }
+    
+    // MARK: - Other
+    
+    func tableViewRowTypeForIndexPath(indexPath: NSIndexPath!) -> TableViewRowType {
+        var rowType: TableViewRowType!
+        if self.isAbsoluteChannelNumbering == true
+        {
+            switch indexPath.section
+            {
+            case TableViewSectionAbsolute.Save.rawValue:
+                rowType = TableViewRowType.Save
+            case TableViewSectionAbsolute.Configure.rawValue:
+                rowType = TableViewRowType.Configure
+            case TableViewSectionAbsolute.PixelType.rawValue:
+                if indexPath.row == 0
+                {
+                    rowType = TableViewRowType.PixelType
+                }
+                else
+                {
+                    rowType = TableViewRowType.PixelTypePicker
+                }
+            case TableViewSectionAbsolute.NumberOfPixels.rawValue:
+                rowType = TableViewRowType.NumberOfPixels
+            case TableViewSectionAbsolute.StartChannel.rawValue:
+                rowType = TableViewRowType.StartChannelAbsolute
+            case TableViewSectionAbsolute.EndChannel.rawValue:
+                rowType = TableViewRowType.EndChannelAbsolute
+            default: break
+            }
+        }
+        else
+        {
+            switch indexPath.section
+            {
+            case TableViewSectionNormal.Save.rawValue:
+                rowType = TableViewRowType.Save
+            case TableViewSectionNormal.Configure.rawValue:
+                rowType = TableViewRowType.Configure
+            case TableViewSectionNormal.PixelType.rawValue:
+                if indexPath.row == 0
+                {
+                    rowType = TableViewRowType.PixelType
+                }
+                else
+                {
+                    rowType = TableViewRowType.PixelTypePicker
+                }
+            case TableViewSectionNormal.NumberOfPixels.rawValue:
+                rowType = TableViewRowType.NumberOfPixels
+            case TableViewSectionNormal.StartUniverse.rawValue:
+                rowType = TableViewRowType.StartUniverse
+            case TableViewSectionNormal.StartChannel.rawValue:
+                if indexPath.row == 0
+                {
+                    rowType = TableViewRowType.StartChannel
+                }
+                else
+                {
+                    rowType = TableViewRowType.StartChannelPicker
+                }
+            case TableViewSectionNormal.EndUniverse.rawValue:
+                rowType = TableViewRowType.EndUniverse
+            case TableViewSectionNormal.EndChannel.rawValue:
+                if indexPath.row == 0
+                {
+                    rowType = TableViewRowType.EndChannel
+                }
+                else
+                {
+                    rowType = TableViewRowType.EndChannelPicker
+                }
+            default: break
+            }
+        }
+        
+        return rowType;
     }
     
     func prepareTextFieldCellWithText(text:String?, tag:Int?) -> TextFieldTableViewCell {
@@ -743,6 +777,36 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
         cell.textField.enabled = (self.itemRefreshCount == self.numberOfItemsToRefresh ? true : false)
         
         return cell
+    }
+    
+    func updateParticleParameterWith(command: UpdateParameterCommands!, outputSetting: OutputSettings!, string: String!)
+    {
+        // Update the endChannel
+        self.device.callFunction("updateParams", withArguments: [command.rawValue, self.output, self.outputSettings[outputSetting.rawValue]!], completion: { (theResult:NSNumber!, error:NSError?) -> Void in
+            if theResult != nil && theResult.integerValue == 1
+            {
+                TSMessage.showNotificationWithTitle("Success", subtitle: "Updated " + string + " to " + String(self.outputSettings[outputSetting.rawValue]!), type:TSMessageNotificationType.Success)
+            }
+            else
+            {
+                TSMessage.showNotificationWithTitle("Error", subtitle: "Error updating " + string + ", please check internet connection.", type: .Error)
+            }
+        })
+    }
+    
+    func updateParticleChannelMap()
+    {
+        // Update the endChannel
+        self.device.callFunction("updateParams", withArguments: [UpdateParameterCommands.ChannelMapForOutput.rawValue, self.output, self.outputSettings[OutputSettings.PixelType.rawValue]!, self.outputSettings[OutputSettings.NumberOfPixels.rawValue]!, self.outputSettings[OutputSettings.StartUniverse.rawValue]!, self.outputSettings[OutputSettings.StartChannel.rawValue]!, self.outputSettings[OutputSettings.EndUniverse.rawValue]!, self.outputSettings[OutputSettings.EndChannel.rawValue]!], completion: { (theResult:NSNumber!, error:NSError?) -> Void in
+            if theResult != nil && theResult.integerValue == 1
+            {
+                TSMessage.showNotificationWithTitle("Success", subtitle: "Updated channel map", type:TSMessageNotificationType.Success)
+            }
+            else
+            {
+                TSMessage.showNotificationWithTitle("Error", subtitle: "Error updating channel map, please check internet connection.", type: .Error)
+            }
+        })
     }
     
     // MARK: - IPAddressPicker

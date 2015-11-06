@@ -448,14 +448,14 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
         switch indexPath.section
         {
         case TableViewSection.Save.rawValue:
-            self.device.callFunction("updateParams", withArguments: [UpdateParameterCommands.UniverseSize.rawValue, self.universeSize!], completion: { (theResult:NSNumber!, error:NSError?) -> Void in
+            self.device.callFunction("updateParams", withArguments: [UpdateParameterCommands.Save.rawValue, self.universeSize!], completion: { (theResult:NSNumber!, error:NSError?) -> Void in
                 if theResult != nil && theResult.integerValue == 1
                 {
-                    TSMessage.showNotificationWithTitle("Success", subtitle: "Updated universeSize to " + String(self.universeSize!), type:TSMessageNotificationType.Success)
+                    TSMessage.showNotificationWithTitle("Success", subtitle: "Saved changes to EEPROM", type:TSMessageNotificationType.Success)
                 }
                 else
                 {
-                    TSMessage.showNotificationWithTitle("Error", subtitle: "Error updating universeSize, please check internet connection.", type: .Error)
+                    TSMessage.showNotificationWithTitle("Error", subtitle: "Error saving changes, please check internet connection.", type: .Error)
                 }
             })
             
@@ -487,6 +487,17 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
                     self.tableView.deleteRowsAtIndexPaths([NSIndexPath.init(forRow: TableViewConfigureRows.UniverseSizePicker.rawValue, inSection: TableViewSection.Configure.rawValue)], withRowAnimation: UITableViewRowAnimation.Fade)
                     self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: TableViewConfigureRows.UniverseSize.rawValue, inSection: TableViewSection.Configure.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
                     self.tableView.endUpdates()
+                    
+                    self.device.callFunction("updateParams", withArguments: [UpdateParameterCommands.UniverseSize.rawValue, self.universeSize!], completion: { (theResult:NSNumber!, error:NSError?) -> Void in
+                        if theResult != nil && theResult.integerValue == 1
+                        {
+                            TSMessage.showNotificationWithTitle("Success", subtitle: "Updated universeSize to " + String(self.universeSize!), type:TSMessageNotificationType.Success)
+                        }
+                        else
+                        {
+                            TSMessage.showNotificationWithTitle("Error", subtitle: "Error updating universeSize, please check internet connection.", type: .Error)
+                        }
+                    })
                 }
             default: break
             }
