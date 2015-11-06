@@ -188,7 +188,6 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
         {
             switch tag.rawValue
             {
-                // TODO: Implement Item updates server interactions
             case TableViewRowType.NumberOfPixels.rawValue:
                 // Auto update the end channel based on the number of pixels
                 if let text = textField.text
@@ -214,7 +213,7 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
                                     }
                                     
                                     // Update the end channel info
-                                    let theoreticalEndChannel = startUniverse * self.universeSize + startChannel + numberOfPixels * 3 - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
+                                    let theoreticalEndChannel = startUniverse * self.universeSize + startChannel + numberOfPixels * 3 - (numberOfPixels > 0 ? 1 : 0) // -1 since channels actually start at 0, but are visually displayed as starting at 1
                                     self.outputSettings[OutputSettings.EndUniverse.rawValue] = Int(theoreticalEndChannel / self.universeSize)
                                     self.outputSettings[OutputSettings.EndChannel.rawValue] = Int(theoreticalEndChannel % self.universeSize)
                                     
@@ -260,7 +259,7 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
                             // Update end info if we have pixels
                             if let numberOfPixels = self.outputSettings[OutputSettings.NumberOfPixels.rawValue]
                             {
-                                let theoreticalEndChannel = self.outputSettings[OutputSettings.StartUniverse.rawValue]! * self.universeSize + self.outputSettings[OutputSettings.StartChannel.rawValue]! + numberOfPixels * 3 - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
+                                let theoreticalEndChannel = self.outputSettings[OutputSettings.StartUniverse.rawValue]! * self.universeSize + self.outputSettings[OutputSettings.StartChannel.rawValue]! + numberOfPixels * 3 - (numberOfPixels > 0 ? 1 : 0) // -1 since channels actually start at 0, but are visually displayed as starting at 1
                                 self.outputSettings[OutputSettings.EndUniverse.rawValue] = theoreticalEndChannel / self.universeSize
                                 self.outputSettings[OutputSettings.EndChannel.rawValue] = theoreticalEndChannel % self.universeSize
                                 
@@ -297,7 +296,7 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
                             // Update the end info if we have pixels
                             if let numberOfPixels = self.outputSettings[OutputSettings.NumberOfPixels.rawValue]
                             {
-                                let theoreticalEndChannel = self.outputSettings[OutputSettings.StartUniverse.rawValue]! * self.universeSize + self.outputSettings[OutputSettings.StartChannel.rawValue]! + numberOfPixels * 3 - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
+                                let theoreticalEndChannel = self.outputSettings[OutputSettings.StartUniverse.rawValue]! * self.universeSize + self.outputSettings[OutputSettings.StartChannel.rawValue]! + numberOfPixels * 3 - (numberOfPixels > 0 ? 1 : 0) // -1 since channels actually start at 0, but are visually displayed as starting at 1
                                 self.outputSettings[OutputSettings.EndUniverse.rawValue] = theoreticalEndChannel / self.universeSize
                                 
                                 self.tableView.reloadRowsAtIndexPaths([NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndUniverse.rawValue), NSIndexPath.init(forRow: 0, inSection: TableViewSectionNormal.EndChannel.rawValue)], withRowAnimation: UITableViewRowAnimation.Automatic)
@@ -497,6 +496,7 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             
         case TableViewRowType.StartChannel.rawValue:
             let cell:UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("basicCell")! as UITableViewCell
+            cell.textLabel?.textAlignment = NSTextAlignment.Left
             if self.startChannelPickerIsVisible == true
             {
                 cell.textLabel!.text = "Done"
@@ -539,6 +539,7 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             
         case TableViewRowType.EndChannel.rawValue:
             let cell:UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("basicCell")! as UITableViewCell
+            cell.textLabel?.textAlignment = NSTextAlignment.Left;
             if self.endChannelPickerIsVisible == true
             {
                 cell.textLabel!.text = "Done"
@@ -652,7 +653,7 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
                     // Update end info if we have pixels
                     if let numberOfPixels = self.outputSettings[OutputSettings.NumberOfPixels.rawValue]
                     {
-                        let theoreticalEndChannel = self.outputSettings[OutputSettings.StartUniverse.rawValue]! * self.universeSize + self.outputSettings[OutputSettings.StartChannel.rawValue]! + numberOfPixels * 3 - 1 // -1 since channels actually start at 0, but are visually displayed as starting at 1
+                        let theoreticalEndChannel = self.outputSettings[OutputSettings.StartUniverse.rawValue]! * self.universeSize + self.outputSettings[OutputSettings.StartChannel.rawValue]! + numberOfPixels * 3 - (numberOfPixels > 0 ? 1 : 0) // -1 since channels actually start at 0, but are visually displayed as starting at 1
                         self.outputSettings[OutputSettings.EndUniverse.rawValue] = theoreticalEndChannel / self.universeSize
                         self.outputSettings[OutputSettings.EndChannel.rawValue] = theoreticalEndChannel % self.universeSize
                         
