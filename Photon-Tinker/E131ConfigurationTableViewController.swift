@@ -10,7 +10,7 @@ import Foundation
 
 enum UpdateParameterCommands: Int {
     case SystemReset = 0
-    case TestOutput
+    case TestAll
     case Save
     case UniverseSize
     case ChannelMapForOutput
@@ -22,9 +22,9 @@ enum UpdateParameterCommands: Int {
     case EndChannelForOutput
 }
 
-let numbersOfTableSections = 5
-let tableSectionNames = ["", "Configure", "Info", "Outputs", ""]
-let tableSectionNumberOfRows = [1, 2, 3, 16, 1]
+let numbersOfTableSections = 6
+let tableSectionNames = ["", "", "Configure", "Info", "Outputs", ""]
+let tableSectionNumberOfRows = [1, 1, 2, 3, 16, 1]
 
 let numberOfItemsToRefresh = 4
 
@@ -36,6 +36,7 @@ enum TextFieldType: Int {
 
 enum TableViewSection: Int {
     case Save = 0
+    case Test
     case Configure
     case Info
     case Outputs
@@ -304,6 +305,14 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
             cell.textLabel?.backgroundColor = UIColor.clearColor();
             masterCell = cell
             
+        case TableViewSection.Test.rawValue:
+            let cell = self.tableView.dequeueReusableCellWithIdentifier("basicCell")! as UITableViewCell
+            cell.textLabel?.text = "Test All Pixels"
+            cell.textLabel?.textAlignment = NSTextAlignment.Center;
+            cell.textLabel?.textColor = self.textFieldTextColor;
+            cell.textLabel?.backgroundColor = UIColor.clearColor();
+            masterCell = cell
+            
         case TableViewSection.Reboot.rawValue:
             let cell = self.tableView.dequeueReusableCellWithIdentifier("basicCell")! as UITableViewCell
             cell.textLabel?.text = "Reboot"
@@ -448,7 +457,7 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
         switch indexPath.section
         {
         case TableViewSection.Save.rawValue:
-            self.device.callFunction("updateParams", withArguments: [UpdateParameterCommands.Save.rawValue, self.universeSize!], completion: { (theResult:NSNumber!, error:NSError?) -> Void in
+            self.device.callFunction("updateParams", withArguments: [UpdateParameterCommands.Save.rawValue], completion: { (theResult:NSNumber!, error:NSError?) -> Void in
                 if theResult != nil && theResult.integerValue == 1
                 {
                     TSMessage.showNotificationWithTitle("Success", subtitle: "Saved changes to EEPROM", type:TSMessageNotificationType.Success)
@@ -459,8 +468,20 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
                 }
             })
             
+        case TableViewSection.Test.rawValue:
+            self.device.callFunction("updateParams", withArguments: [UpdateParameterCommands.TestAll.rawValue], completion: { (theResult:NSNumber!, error:NSError?) -> Void in
+                if theResult != nil && theResult.integerValue == 1
+                {
+                    TSMessage.showNotificationWithTitle("Success", subtitle: "Testing All Outputs", type:TSMessageNotificationType.Success)
+                }
+                else
+                {
+                    TSMessage.showNotificationWithTitle("Error", subtitle: "Error testing all outputs, please check internet connection.", type: .Error)
+                }
+            })
+            
         case TableViewSection.Reboot.rawValue:
-            self.device.callFunction("updateParams", withArguments: [UpdateParameterCommands.SystemReset.rawValue, self.universeSize!], completion: { (theResult:NSNumber!, error:NSError?) -> Void in
+            self.device.callFunction("updateParams", withArguments: [UpdateParameterCommands.SystemReset.rawValue], completion: { (theResult:NSNumber!, error:NSError?) -> Void in
                 
             })
             TSMessage.showNotificationWithTitle("Rebooting", subtitle: "Please wait up to 30 seconds while the system reboots. Then pull down to refresh.", type:TSMessageNotificationType.Warning)

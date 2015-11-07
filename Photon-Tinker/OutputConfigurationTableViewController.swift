@@ -76,10 +76,10 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
     var universeSize: Int!
     
     // General variables
-    var numberOfTableSectionsNormal = 8
-    var numberOfTableSectionsAbsolute = 6
-    var tableSectionNamesNormal = ["", "Configure", "Pixel Type", "Number Of Pixels", "Start Universe", "Start Channel", "End Universe", "End Channel"]
-    var tableSectionNamesAbsolute = ["", "Configure", "Pixel Type", "Number Of Pixels", "Start Channel", "End Channel"]
+    var numberOfTableSectionsNormal = 9
+    var numberOfTableSectionsAbsolute = 7
+    var tableSectionNamesNormal = ["", "", "Configure", "Pixel Type", "Number Of Pixels", "Start Universe", "Start Channel", "End Universe", "End Channel"]
+    var tableSectionNamesAbsolute = ["", "", "Configure", "Pixel Type", "Number Of Pixels", "Start Channel", "End Channel"]
     var numberOfItemsToRefresh = 1
     var itemRefreshCount = 0
     var isAbsoluteChannelNumbering = true
@@ -596,7 +596,7 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
         switch rowType.rawValue
         {
         case TableViewRowType.Save.rawValue:
-            self.device.callFunction("updateParams", withArguments: [UpdateParameterCommands.Save.rawValue, self.universeSize!], completion: { (theResult:NSNumber!, error:NSError?) -> Void in
+            self.device.callFunction("updateParams", withArguments: [UpdateParameterCommands.Save.rawValue], completion: { (theResult:NSNumber!, error:NSError?) -> Void in
                 if theResult != nil && theResult.integerValue == 1
                 {
                     TSMessage.showNotificationWithTitle("Success", subtitle: "Saved changes to EEPROM", type:TSMessageNotificationType.Success)
