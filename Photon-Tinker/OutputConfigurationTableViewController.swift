@@ -19,6 +19,7 @@ enum TextFieldTypeOutput: Int {
 
 enum TableViewSectionNormal: Int {
     case Save = 0
+    case Name
     case Configure
     case PixelType
     case NumberOfPixels
@@ -30,6 +31,7 @@ enum TableViewSectionNormal: Int {
 
 enum TableViewSectionAbsolute: Int {
     case Save = 0
+    case Name
     case Configure
     case PixelType
     case NumberOfPixels
@@ -39,6 +41,7 @@ enum TableViewSectionAbsolute: Int {
 
 enum TableViewRowType: Int {
     case Save = 0
+    case Name
     case Configure
     case PixelType
     case PixelTypePicker
@@ -78,8 +81,8 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
     // General variables
     var numberOfTableSectionsNormal = 9
     var numberOfTableSectionsAbsolute = 7
-    var tableSectionNamesNormal = ["", "", "Configure", "Pixel Type", "Number Of Pixels", "Start Universe", "Start Channel", "End Universe", "End Channel"]
-    var tableSectionNamesAbsolute = ["", "", "Configure", "Pixel Type", "Number Of Pixels", "Start Channel", "End Channel"]
+    var tableSectionNamesNormal = ["", "Name", "Configure", "Pixel Type", "Number Of Pixels", "Start Universe", "Start Channel", "End Universe", "End Channel"]
+    var tableSectionNamesAbsolute = ["", "Name", "Configure", "Pixel Type", "Number Of Pixels", "Start Channel", "End Channel"]
     var numberOfItemsToRefresh = 1
     var itemRefreshCount = 0
     var isAbsoluteChannelNumbering = true
@@ -93,6 +96,7 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
     
     // Pin mapping variables
     var outputSettings: [Int?] = [nil, nil, nil, nil, nil, nil, nil, nil]
+    var outputName: String?
     
     //MARK: - Initialization
     
@@ -149,12 +153,21 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
                     let outputSettings = outputSetting.componentsSeparatedByString(";")
                     if outputSettings.count > self.output
                     {
+                        // Only find the settings for this output
                         let stringPinMap = (outputSettings[self.output]).componentsSeparatedByString(",")
                         for var i = 0; i < stringPinMap.count; ++i
                         {
                             if stringPinMap[i].characters.count > 0
                             {
-                                self.outputSettings[i] = Int(stringPinMap[i])!
+                                if let intValue = Int(stringPinMap[i])
+                                {
+                                    self.outputSettings[i] = intValue
+                                }
+                                // String values always come after all of the int values
+                                else
+                                {
+                                    self.outputName = stringPinMap[i];
+                                }
                             }
                         }
                     }
@@ -188,6 +201,35 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
         {
             switch tag.rawValue
             {
+            case TableViewRowType.Name.rawValue:
+                // Auto update the end channel based on the number of pixels
+                if let text = textField.text
+                {
+                    if text.characters.count > 0
+                    {
+                        if text.characters.count > 32
+                        {
+                            
+                            self.outputName = text.substringToIndex(text.startIndex.advancedBy(32))
+                        }
+                        else
+                        {
+                            self.outputName = text
+                        }
+                        
+                        // Update the endChannel
+                        self.device.callFunction("updateParams", withArguments: [UpdateParameterCommands.NameForOutput.rawValue, self.output, self.outputName!], completion: { (theResult:NSNumber!, error:NSError?) -> Void in
+                            if theResult != nil && theResult.integerValue == 1
+                            {
+                                TSMessage.showNotificationWithTitle("Success", subtitle: "Updated name to " + self.outputName!, type:TSMessageNotificationType.Success)
+                            }
+                            else
+                            {
+                                TSMessage.showNotificationWithTitle("Error", subtitle: "Error updating name, please check internet connection.", type: .Error)
+                            }
+                        })
+                    }
+                }
             case TableViewRowType.NumberOfPixels.rawValue:
                 // Auto update the end channel based on the number of pixels
                 if let text = textField.text
@@ -455,6 +497,18 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             cell.textLabel?.textAlignment = NSTextAlignment.Center;
             cell.textLabel?.backgroundColor = UIColor.clearColor();
             masterCell = cell
+        case TableViewRowType.Name.rawValue:
+            let cell:TextFieldTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("textFieldCell") as! TextFieldTableViewCell
+            if let text = self.outputName
+            {
+                cell.textField.text = text
+            }
+            cell.textField.delegate = self
+            cell.textField.keyboardType = UIKeyboardType.Default
+            cell.textField.tag = rowType.rawValue
+            cell.textField.enabled = (self.itemRefreshCount == self.numberOfItemsToRefresh ? true : false)
+            masterCell = cell
+            
         case TableViewRowType.Configure.rawValue:
             let cell:LabelAndSwitchTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("labelAndSwitchCell") as! LabelAndSwitchTableViewCell
             masterCell = cell
@@ -718,6 +772,8 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             {
             case TableViewSectionAbsolute.Save.rawValue:
                 rowType = TableViewRowType.Save
+            case TableViewSectionAbsolute.Name.rawValue:
+                rowType = TableViewRowType.Name
             case TableViewSectionAbsolute.Configure.rawValue:
                 rowType = TableViewRowType.Configure
             case TableViewSectionAbsolute.PixelType.rawValue:
@@ -744,6 +800,8 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
             {
             case TableViewSectionNormal.Save.rawValue:
                 rowType = TableViewRowType.Save
+            case TableViewSectionNormal.Name.rawValue:
+                rowType = TableViewRowType.Name
             case TableViewSectionNormal.Configure.rawValue:
                 rowType = TableViewRowType.Configure
             case TableViewSectionNormal.PixelType.rawValue:
@@ -788,9 +846,9 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
     
     func prepareTextFieldCellWithText(text:String?, tag:Int?) -> TextFieldTableViewCell {
         let cell:TextFieldTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("textFieldCell") as! TextFieldTableViewCell
-        if let _ = text
+        if let theText = text
         {
-            cell.textField.text = text
+            cell.textField.text = theText
         }
         cell.textField.delegate = self
         cell.textField.keyboardType = UIKeyboardType.NumberPad

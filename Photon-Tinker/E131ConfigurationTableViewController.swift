@@ -20,11 +20,12 @@ enum UpdateParameterCommands: Int {
     case StartChannelForOutput
     case EndUniverseForOutput
     case EndChannelForOutput
+    case NameForOutput
 }
 
 let numbersOfTableSections = 6
 let tableSectionNames = ["", "", "Configure", "Info", "Outputs", ""]
-let tableSectionNumberOfRows = [1, 1, 2, 3, 16, 1]
+let tableSectionNumberOfRows = [1, 1, 2, 3, 8, 1]
 
 let numberOfItemsToRefresh = 4
 
