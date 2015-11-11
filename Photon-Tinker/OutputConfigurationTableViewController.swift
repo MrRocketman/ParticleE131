@@ -92,7 +92,7 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
     var endChannelPicker: UIPickerView?
     
     // Pin mapping variables
-    var outputSettings = [Int?]()
+    var outputSettings = [Int?](count: 7, repeatedValue:nil)
     var outputName: String?
     
     //MARK: - Initialization
