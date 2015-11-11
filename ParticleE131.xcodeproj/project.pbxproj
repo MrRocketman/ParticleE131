@@ -13,7 +13,7 @@
 		1A84FE691BE61040009A8BA7 /* LabelAndSwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A84FE651BE61040009A8BA7 /* LabelAndSwitchTableViewCell.swift */; };
 		1A84FE6A1BE61040009A8BA7 /* LabelAndTextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A84FE661BE61040009A8BA7 /* LabelAndTextFieldTableViewCell.swift */; };
 		1A84FE6B1BE61040009A8BA7 /* TextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A84FE671BE61040009A8BA7 /* TextFieldTableViewCell.swift */; };
-		1A9058671BEF627A0033E8E5 /* photon_firmware_0000000007.bin in Resources */ = {isa = PBXBuildFile; fileRef = 1A9058661BEF627A0033E8E5 /* photon_firmware_0000000007.bin */; };
+		1A9058691BF3284C0033E8E5 /* photon_firmware_0000000008.bin in Resources */ = {isa = PBXBuildFile; fileRef = 1A9058681BF3284C0033E8E5 /* photon_firmware_0000000008.bin */; };
 		5014D1F01AE88D0B00725BA8 /* Gotham-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 5014D1EF1AE88D0B00725BA8 /* Gotham-Light.otf */; };
 		5022204B1B1E7F8400387B24 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5022204A1B1E7F8400387B24 /* WebViewController.swift */; };
 		502E9BC01B194DF800D2C45B /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 502E9BBF1B194DF800D2C45B /* SettingsTableViewController.swift */; };
@@ -41,7 +41,7 @@
 		1A84FE651BE61040009A8BA7 /* LabelAndSwitchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelAndSwitchTableViewCell.swift; sourceTree = "<group>"; };
 		1A84FE661BE61040009A8BA7 /* LabelAndTextFieldTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelAndTextFieldTableViewCell.swift; sourceTree = "<group>"; };
 		1A84FE671BE61040009A8BA7 /* TextFieldTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextFieldTableViewCell.swift; sourceTree = "<group>"; };
-		1A9058661BEF627A0033E8E5 /* photon_firmware_0000000007.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = photon_firmware_0000000007.bin; sourceTree = "<group>"; };
+		1A9058681BF3284C0033E8E5 /* photon_firmware_0000000008.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = photon_firmware_0000000008.bin; sourceTree = "<group>"; };
 		5014D1EF1AE88D0B00725BA8 /* Gotham-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gotham-Light.otf"; sourceTree = "<group>"; };
 		5022204A1B1E7F8400387B24 /* WebViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
 		502E9BBF1B194DF800D2C45B /* SettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
@@ -180,7 +180,7 @@
 		50F62D721AE071AF00109F33 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
-				1A9058661BEF627A0033E8E5 /* photon_firmware_0000000007.bin */,
+				1A9058681BF3284C0033E8E5 /* photon_firmware_0000000008.bin */,
 				50B1254F1AE06CF4003C29DC /* Images.xcassets */,
 				5067A0CE1B30EBB500A87D71 /* photon_wifi.mp4 */,
 				50B1254C1AE06CF4003C29DC /* Main.storyboard */,
@@ -275,8 +275,8 @@
 				50F62D9C1AE0721200109F33 /* Gotham-XLightIta.otf in Resources */,
 				5067A0CF1B30EBB500A87D71 /* photon_wifi.mp4 in Resources */,
 				50B1254E1AE06CF4003C29DC /* Main.storyboard in Resources */,
+				1A9058691BF3284C0033E8E5 /* photon_firmware_0000000008.bin in Resources */,
 				50F62D991AE0721200109F33 /* Gotham-Book.otf in Resources */,
-				1A9058671BEF627A0033E8E5 /* photon_firmware_0000000007.bin in Resources */,
 				5014D1F01AE88D0B00725BA8 /* Gotham-Light.otf in Resources */,
 				5055653E1AF2D3150099F493 /* Gotham-XLight.otf in Resources */,
 				50B125501AE06CF4003C29DC /* Images.xcassets in Resources */,
