@@ -121,10 +121,9 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        // No need to auto refresh anymore since the previous view passes us all the data we need. Still allow the user to manually refresh though
-        //self.refreshControl?.beginRefreshing()
-        //self.tableView.setContentOffset(CGPointMake(0, -(self.refreshControl?.frame.size.height)!), animated:true)
-        //self.loadDevices()
+        self.refreshControl?.beginRefreshing()
+        self.tableView.setContentOffset(CGPointMake(0, -(self.refreshControl?.frame.size.height)!), animated:true)
+        self.loadDevices()
     }
     
     func imageResize(image:UIImage, newRect:CGRect) -> UIImage {

@@ -23,6 +23,13 @@ enum UpdateParameterCommands: Int {
     case NameForOutput
 }
 
+enum TestAllOptions: Int {
+    case Off = 0
+    case Rainbow
+    case RGB
+    case White
+}
+
 let numbersOfTableSections = 6
 let tableSectionNames = ["", "", "Configure", "Info", "Outputs", ""]
 let tableSectionNumberOfRows = [1, 1, 2, 3, 8, 1]
@@ -119,11 +126,6 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
                 vc.device = self.device
                 vc.universeSize = self.universeSize
                 vc.output = self.selectedTableViewRow
-                if let name = self.outputNames[self.selectedTableViewRow]
-                {
-                    vc.outputName = name
-                }
-                vc.outputSettings = self.outputSettings[self.selectedTableViewRow]
             }
         }
     }
@@ -541,16 +543,66 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
             })
             
         case TableViewSection.Test.rawValue:
-            self.device.callFunction("updateParams", withArguments: [UpdateParameterCommands.TestAll.rawValue], completion: { (theResult:NSNumber!, error:NSError?) -> Void in
-                if theResult != nil && theResult.integerValue == 1
-                {
-                    TSMessage.showNotificationWithTitle("Success", subtitle: "Testing All Outputs", type:TSMessageNotificationType.Success)
-                }
-                else
-                {
-                    TSMessage.showNotificationWithTitle("Error", subtitle: "Error testing all outputs, please check internet connection.", type: .Error)
-                }
-            })
+            let alertController = UIAlertController(title: nil, message: "Select what type of test you would like to run", preferredStyle: .ActionSheet)
+            let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (action) in
+                // ...
+            }
+            alertController.addAction(cancelAction)
+            let offAction = UIAlertAction(title: "Off", style: .Default) { (action) in
+                self.device.callFunction("updateParams", withArguments: [UpdateParameterCommands.TestAll.rawValue, TestAllOptions.Off.rawValue], completion: { (theResult:NSNumber!, error:NSError?) -> Void in
+                    if theResult != nil && theResult.integerValue == 1
+                    {
+                        TSMessage.showNotificationWithTitle("Success", subtitle: "Stopped Testing All Outputs", type:TSMessageNotificationType.Success)
+                    }
+                    else
+                    {
+                        TSMessage.showNotificationWithTitle("Error", subtitle: "Error stopping all outputs, please check internet connection.", type: .Error)
+                    }
+                })
+            }
+            alertController.addAction(offAction)
+            let rainbowAction = UIAlertAction(title: "Rainbow", style: .Default) { (action) in
+                self.device.callFunction("updateParams", withArguments: [UpdateParameterCommands.TestAll.rawValue, TestAllOptions.Rainbow.rawValue], completion: { (theResult:NSNumber!, error:NSError?) -> Void in
+                    if theResult != nil && theResult.integerValue == 1
+                    {
+                        TSMessage.showNotificationWithTitle("Success", subtitle: "Testing All Outputs with Rainbow", type:TSMessageNotificationType.Success)
+                    }
+                    else
+                    {
+                        TSMessage.showNotificationWithTitle("Error", subtitle: "Error testing all outputs rainbow, please check internet connection.", type: .Error)
+                    }
+                })
+            }
+            alertController.addAction(rainbowAction)
+            let RGBAction = UIAlertAction(title: "RGB", style: .Default) { (action) in
+                self.device.callFunction("updateParams", withArguments: [UpdateParameterCommands.TestAll.rawValue, TestAllOptions.RGB.rawValue], completion: { (theResult:NSNumber!, error:NSError?) -> Void in
+                    if theResult != nil && theResult.integerValue == 1
+                    {
+                        TSMessage.showNotificationWithTitle("Success", subtitle: "Testing All Outputs RGB", type:TSMessageNotificationType.Success)
+                    }
+                    else
+                    {
+                        TSMessage.showNotificationWithTitle("Error", subtitle: "Error testing all outputs RGB, please check internet connection.", type: .Error)
+                    }
+                })
+            }
+            alertController.addAction(RGBAction)
+            let whiteAction = UIAlertAction(title: "White", style: .Default) { (action) in
+                self.device.callFunction("updateParams", withArguments: [UpdateParameterCommands.TestAll.rawValue, TestAllOptions.White.rawValue], completion: { (theResult:NSNumber!, error:NSError?) -> Void in
+                    if theResult != nil && theResult.integerValue == 1
+                    {
+                        TSMessage.showNotificationWithTitle("Success", subtitle: "Testing All Outputs White", type:TSMessageNotificationType.Success)
+                    }
+                    else
+                    {
+                        TSMessage.showNotificationWithTitle("Error", subtitle: "Error testing all outputs white, please check internet connection.", type: .Error)
+                    }
+                })
+            }
+            alertController.addAction(whiteAction)
+            self.presentViewController(alertController, animated: true) {
+                // ...
+            }
             
         case TableViewSection.Reboot.rawValue:
             self.device.callFunction("updateParams", withArguments: [UpdateParameterCommands.SystemReset.rawValue], completion: { (theResult:NSNumber!, error:NSError?) -> Void in

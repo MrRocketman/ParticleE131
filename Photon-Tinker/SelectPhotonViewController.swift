@@ -11,7 +11,7 @@ import UIKit
 let deviceNamesArr : [String] = [ "aardvark", "bacon", "badger", "banjo", "bobcat", "boomer", "captain", "chicken", "cowboy", "cracker", "cranky", "crazy", "dentist", "doctor", "dozen", "easter", "ferret", "gerbil", "hacker", "hamster", "hindu", "hobo", "hoosier", "hunter", "jester", "jetpack", "kitty", "laser", "lawyer", "mighty", "monkey", "morphing", "mutant", "narwhal", "ninja", "normal", "penguin", "pirate", "pizza", "plumber", "power", "puppy", "ranger", "raptor", "robot", "scraper", "scrapple", "station", "tasty", "trochee", "turkey", "turtle", "vampire", "wombat", "zombie" ]
 let kDefaultCoreFlashingTime : Int = 30
 let kDefaultPhotonFlashingTime : Int = 15
-let latestE131FVersion = "0000000008"
+let latestE131FVersion = "0000000009"
 
 
 class SelectPhotonViewController: UITableViewController, SparkSetupMainControllerDelegate {
