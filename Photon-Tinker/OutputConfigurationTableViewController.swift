@@ -18,8 +18,7 @@ enum TextFieldTypeOutput: Int {
 }
 
 enum TableViewSectionNormal: Int {
-    case Save = 0
-    case Name
+    case Name = 0
     case Configure
     case PixelType
     case NumberOfPixels
@@ -30,8 +29,7 @@ enum TableViewSectionNormal: Int {
 }
 
 enum TableViewSectionAbsolute: Int {
-    case Save = 0
-    case Name
+    case Name = 0
     case Configure
     case PixelType
     case NumberOfPixels
@@ -40,8 +38,7 @@ enum TableViewSectionAbsolute: Int {
 }
 
 enum TableViewRowType: Int {
-    case Save = 0
-    case Name
+    case Name = 0
     case Configure
     case PixelType
     case PixelTypePicker
@@ -79,10 +76,10 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
     var universeSize: Int!
     
     // General variables
-    var numberOfTableSectionsNormal = 9
-    var numberOfTableSectionsAbsolute = 7
-    var tableSectionNamesNormal = ["", "Name", "Configure", "Pixel Type", "Number Of Pixels", "Start Universe", "Start Channel", "End Universe", "End Channel"]
-    var tableSectionNamesAbsolute = ["", "Name", "Configure", "Pixel Type", "Number Of Pixels", "Start Channel", "End Channel"]
+    var numberOfTableSectionsNormal = 8
+    var numberOfTableSectionsAbsolute = 6
+    var tableSectionNamesNormal = ["Name", "Configure", "Pixel Type", "Number Of Pixels", "Start Universe", "Start Channel", "End Universe", "End Channel"]
+    var tableSectionNamesAbsolute = ["Name", "Configure", "Pixel Type", "Number Of Pixels", "Start Channel", "End Channel"]
     var numberOfItemsToRefresh = 1
     var itemRefreshCount = 0
     var isAbsoluteChannelNumbering = true
@@ -492,12 +489,6 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
         
         switch rowType.rawValue
         {
-        case TableViewRowType.Save.rawValue:
-            let cell = self.tableView.dequeueReusableCellWithIdentifier("basicCell")! as UITableViewCell
-            cell.textLabel?.text = "Save"
-            cell.textLabel?.textAlignment = NSTextAlignment.Center;
-            cell.textLabel?.backgroundColor = UIColor.clearColor();
-            masterCell = cell
         case TableViewRowType.Name.rawValue:
             let cell:TextFieldTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("textFieldCell") as! TextFieldTableViewCell
             if let text = self.outputName
@@ -650,17 +641,6 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
         
         switch rowType.rawValue
         {
-        case TableViewRowType.Save.rawValue:
-            self.device.callFunction("updateParams", withArguments: [UpdateParameterCommands.Save.rawValue], completion: { (theResult:NSNumber!, error:NSError?) -> Void in
-                if theResult != nil && theResult.integerValue == 1
-                {
-                    TSMessage.showNotificationWithTitle("Success", subtitle: "Saved changes to EEPROM", type:TSMessageNotificationType.Success)
-                }
-                else
-                {
-                    TSMessage.showNotificationWithTitle("Error", subtitle: "Error saving changes, please check internet connection.", type: .Error)
-                }
-            })
         case TableViewRowType.PixelType.rawValue:
             self.tableView.beginUpdates()
             if(self.pixelTypePickerIsVisible == false)
@@ -771,8 +751,6 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
         {
             switch indexPath.section
             {
-            case TableViewSectionAbsolute.Save.rawValue:
-                rowType = TableViewRowType.Save
             case TableViewSectionAbsolute.Name.rawValue:
                 rowType = TableViewRowType.Name
             case TableViewSectionAbsolute.Configure.rawValue:
@@ -799,8 +777,6 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
         {
             switch indexPath.section
             {
-            case TableViewSectionNormal.Save.rawValue:
-                rowType = TableViewRowType.Save
             case TableViewSectionNormal.Name.rawValue:
                 rowType = TableViewRowType.Name
             case TableViewSectionNormal.Configure.rawValue:
