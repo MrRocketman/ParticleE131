@@ -27,7 +27,7 @@ let numbersOfTableSections = 6
 let tableSectionNames = ["", "", "Configure", "Info", "Outputs", ""]
 let tableSectionNumberOfRows = [1, 1, 2, 3, 8, 1]
 
-let numberOfItemsToRefresh = 4
+let numberOfItemsToRefresh = 5
 
 enum TextFieldType: Int {
     case Name = 0
@@ -70,6 +70,9 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
     var universeSizePicker: UIPickerView?
     var universeSizePickerIsVisible = false
     var selectedTableViewRow: Int!
+    
+    var outputSettings: [[Int?]] = []
+    var outputNames: [String?] = []
     
     //MARK: - Initialization
     
@@ -116,6 +119,11 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
                 vc.device = self.device
                 vc.universeSize = self.universeSize
                 vc.output = self.selectedTableViewRow
+                if let name = self.outputNames[self.selectedTableViewRow]
+                {
+                    vc.outputName = name
+                }
+                vc.outputSettings = self.outputSettings[self.selectedTableViewRow]
             }
         }
     }
@@ -206,6 +214,53 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
                         if let localIP: String = theResult as? String
                         {
                             self.localIPAddress = localIP
+                        }
+                        
+                        // Finish the refresh after all variables have loaded
+                        if(++self.itemRefreshCount >= numberOfItemsToRefresh)
+                        {
+                            self.refreshControl?.endRefreshing()
+                            dispatch_async(dispatch_get_main_queue()) {
+                                self.tableView.reloadData()
+                            }
+                        }
+                    })
+                    self.device.getVariable("outputConfig", completion: { (theResult:AnyObject!, error:NSError?) -> Void in
+                        if let outputSetting = theResult as? String
+                        {
+                            let outputSettings = outputSetting.componentsSeparatedByString(";")
+                            for (i, currentOutputSetting) in outputSettings.enumerate()
+                            {
+                                // Only use this output if it has settings
+                                if currentOutputSetting.characters.count > 0
+                                {
+                                    // Add an emptry array for this output's settings
+                                    self.outputSettings.append([Int?]())
+                                    
+                                    // Break down the settings for this output
+                                    let stringPinMap = currentOutputSetting.componentsSeparatedByString(",")
+                                    for var i2 = 0; i2 < stringPinMap.count; ++i2
+                                    {
+                                        // Only add the value if there is something there
+                                        if stringPinMap[i2].characters.count > 0
+                                        {
+                                            if let intValue = Int(stringPinMap[i2])
+                                            {
+                                                self.outputSettings[i].append(intValue)
+                                            }
+                                                // String values always come after all of the int values
+                                            else
+                                            {
+                                                self.outputNames.append(stringPinMap[i2])
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            TSMessage.showNotificationWithTitle("Error", subtitle: "Error loading channel settings. Please check internet connection.", type: .Error)
                         }
                         
                         // Finish the refresh after all variables have loaded
@@ -417,10 +472,26 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
                 masterCell = nil
             }
         case TableViewSection.Outputs.rawValue: // Outputs Section
+            let cell:OutputDescriptionTableViewCell = self.tableView.dequeueReusableCellWithIdentifier("outputDescriptionCell") as! OutputDescriptionTableViewCell
+            if let pixels = self.outputSettings[indexPath.row][OutputSettings.NumberOfPixels.rawValue]
+            {
+                cell.pixelsLabel.text = String(pixels) + " Pixels";
+            }
+            else
+            {
+                cell.pixelsLabel.text = "Undefined Pixels";
+            }
             
-            let cell:UITableViewCell = self.tableView.dequeueReusableCellWithIdentifier("basicDisclosureIndicatorCell")! as UITableViewCell
-            cell.textLabel!.text = String(indexPath.row + 1)
-            cell.textLabel!.backgroundColor = UIColor.clearColor()
+            if let name = self.outputNames[indexPath.row]
+            {
+                cell.nameLabel.text = name
+            }
+            else
+            {
+                cell.nameLabel.text = "Undefined Name"
+            }
+            let outputNumber = String(indexPath.row + 1)
+            cell.numberLabel.text = outputNumber
             masterCell = cell
         default:
             masterCell = nil

@@ -95,7 +95,7 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
     var endChannelPicker: UIPickerView?
     
     // Pin mapping variables
-    var outputSettings: [Int?] = [nil, nil, nil, nil, nil, nil, nil, nil]
+    var outputSettings = [Int?]()
     var outputName: String?
     
     //MARK: - Initialization
@@ -124,9 +124,10 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.refreshControl?.beginRefreshing()
-        self.tableView.setContentOffset(CGPointMake(0, -(self.refreshControl?.frame.size.height)!), animated:true)
-        self.loadDevices()
+        // No need to auto refresh anymore since the previous view passes us all the data we need. Still allow the user to manually refresh though
+        //self.refreshControl?.beginRefreshing()
+        //self.tableView.setContentOffset(CGPointMake(0, -(self.refreshControl?.frame.size.height)!), animated:true)
+        //self.loadDevices()
     }
     
     func imageResize(image:UIImage, newRect:CGRect) -> UIImage {
@@ -166,7 +167,7 @@ class OutputConfigurationTableViewController: UITableViewController, UITextField
                                 // String values always come after all of the int values
                                 else
                                 {
-                                    self.outputName = stringPinMap[i];
+                                    self.outputName = stringPinMap[i]
                                 }
                             }
                         }
