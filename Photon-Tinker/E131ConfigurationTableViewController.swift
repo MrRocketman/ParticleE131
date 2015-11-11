@@ -230,6 +230,10 @@ class E131ConfigurationTableViewController: UITableViewController, UITextFieldDe
                     self.device.getVariable("outputConfig", completion: { (theResult:AnyObject!, error:NSError?) -> Void in
                         if let outputSetting = theResult as? String
                         {
+                            // Remove any old data
+                            self.outputSettings.removeAll()
+                            self.outputNames.removeAll()
+                            
                             let outputSettings = outputSetting.componentsSeparatedByString(";")
                             for (i, currentOutputSetting) in outputSettings.enumerate()
                             {
