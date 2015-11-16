@@ -8,8 +8,8 @@
 
 import Foundation
 
-let pixelTypeDescriptions = ["WS2811 (Bullet/Flat Style)", "WS2811 (Bullet/Flat Style Slow)", "Neopixel", "WS2812", "WS2812B", "APA104 (Dotstar)", "LPD1886 (12 bit per pixel)"];
-var pixelTypeValues = [0, 1, 2, 3, 4, 5, 6];
+let pixelTypeDescriptions = ["WS2811 (Bullet/Square Style)", "WS2811 (3 LED Module Style)", "WS2811 (Bullet/Square Style Slow)", "Neopixel", "WS2812", "WS2812B", "APA104 (Dotstar)", "LPD1886 (12 bit per pixel)"];
+var pixelTypeValues = [0, 1, 2, 3, 4, 5, 6, 7];
 
 enum TextFieldTypeOutput: Int {
     case NumberOfPixels = 0
