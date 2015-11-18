@@ -11,7 +11,7 @@ import UIKit
 let deviceNamesArr : [String] = [ "aardvark", "bacon", "badger", "banjo", "bobcat", "boomer", "captain", "chicken", "cowboy", "cracker", "cranky", "crazy", "dentist", "doctor", "dozen", "easter", "ferret", "gerbil", "hacker", "hamster", "hindu", "hobo", "hoosier", "hunter", "jester", "jetpack", "kitty", "laser", "lawyer", "mighty", "monkey", "morphing", "mutant", "narwhal", "ninja", "normal", "penguin", "pirate", "pizza", "plumber", "power", "puppy", "ranger", "raptor", "robot", "scraper", "scrapple", "station", "tasty", "trochee", "turkey", "turtle", "vampire", "wombat", "zombie" ]
 let kDefaultCoreFlashingTime : Int = 30
 let kDefaultPhotonFlashingTime : Int = 15
-let latestE131FVersion = "000000000b"
+let latestE131FVersion = "000000000c"
 
 
 class SelectPhotonViewController: UITableViewController, SparkSetupMainControllerDelegate {
@@ -175,10 +175,10 @@ class SelectPhotonViewController: UITableViewController, SparkSetupMainControlle
                     if firstDevice.connected && secondDevice.connected
                     {
                         // First device has variables
-                        if firstDevice.variables != nil
+                        if firstDevice.variables != nil && firstDevice.variables.count > 0
                         {
                             // Second device has variables
-                            if secondDevice.variables != nil
+                            if secondDevice.variables != nil && secondDevice.variables.count > 0
                             {
                                 // First device isn't running e131. Second is. Change the order
                                 if firstDevice.variables["e131FVersion"] == nil && secondDevice.variables["e131FVersion"] != nil

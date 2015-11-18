@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1A3916631BFC0FE00094981D /* photon_firmware_000000000a.bin in Resources */ = {isa = PBXBuildFile; fileRef = 1A3916621BFC0FE00094981D /* photon_firmware_000000000a.bin */; };
 		1A3916671BFC10650094981D /* photon_firmware_000000000b.bin in Resources */ = {isa = PBXBuildFile; fileRef = 1A3916661BFC10650094981D /* photon_firmware_000000000b.bin */; };
+		1A3916691BFC526A0094981D /* photon_firmware_000000000c.bin in Resources */ = {isa = PBXBuildFile; fileRef = 1A3916681BFC526A0094981D /* photon_firmware_000000000c.bin */; };
 		1A84FE621BE61028009A8BA7 /* E131ConfigurationTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A84FE601BE61028009A8BA7 /* E131ConfigurationTableViewController.swift */; };
 		1A84FE631BE61028009A8BA7 /* OutputConfigurationTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A84FE611BE61028009A8BA7 /* OutputConfigurationTableViewController.swift */; };
 		1A84FE681BE61040009A8BA7 /* IPAddressPickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A84FE641BE61040009A8BA7 /* IPAddressPickerTableViewCell.swift */; };
@@ -39,6 +40,7 @@
 		11E94C4837B96B025C60BE2B /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A3916621BFC0FE00094981D /* photon_firmware_000000000a.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = photon_firmware_000000000a.bin; sourceTree = "<group>"; };
 		1A3916661BFC10650094981D /* photon_firmware_000000000b.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = photon_firmware_000000000b.bin; sourceTree = "<group>"; };
+		1A3916681BFC526A0094981D /* photon_firmware_000000000c.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = photon_firmware_000000000c.bin; sourceTree = "<group>"; };
 		1A84FE601BE61028009A8BA7 /* E131ConfigurationTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = E131ConfigurationTableViewController.swift; sourceTree = "<group>"; };
 		1A84FE611BE61028009A8BA7 /* OutputConfigurationTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OutputConfigurationTableViewController.swift; sourceTree = "<group>"; };
 		1A84FE641BE61040009A8BA7 /* IPAddressPickerTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IPAddressPickerTableViewCell.swift; sourceTree = "<group>"; };
@@ -187,6 +189,7 @@
 			children = (
 				1A3916621BFC0FE00094981D /* photon_firmware_000000000a.bin */,
 				1A3916661BFC10650094981D /* photon_firmware_000000000b.bin */,
+				1A3916681BFC526A0094981D /* photon_firmware_000000000c.bin */,
 				50B1254F1AE06CF4003C29DC /* Images.xcassets */,
 				5067A0CE1B30EBB500A87D71 /* photon_wifi.mp4 */,
 				50B1254C1AE06CF4003C29DC /* Main.storyboard */,
@@ -288,6 +291,7 @@
 				50B125501AE06CF4003C29DC /* Images.xcassets in Resources */,
 				50F62D9A1AE0721200109F33 /* Gotham-Medium.otf in Resources */,
 				1A3916671BFC10650094981D /* photon_firmware_000000000b.bin in Resources */,
+				1A3916691BFC526A0094981D /* photon_firmware_000000000c.bin in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
