@@ -45,7 +45,7 @@ class SelectPhotonViewController: UITableViewController, SparkSetupMainControlle
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-
+    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         self.deviceIDflashingTimer!.invalidate()
         if segue.identifier == "tinker"
@@ -58,7 +58,7 @@ class SelectPhotonViewController: UITableViewController, SparkSetupMainControlle
             }
         }
     }
-
+    
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
         self.refreshControl?.beginRefreshing()
@@ -159,12 +159,12 @@ class SelectPhotonViewController: UITableViewController, SparkSetupMainControlle
                     }
                     return false;
                 })
-
+                
                 // then sort by device type
                 self.devices.sortInPlace({ (firstDevice:SparkDevice, secondDevice:SparkDevice) -> Bool in
                     return firstDevice.type.rawValue > secondDevice.type.rawValue
                 })
-
+                
                 // and then by online/offline
                 self.devices.sortInPlace({ (firstDevice:SparkDevice, secondDevice:SparkDevice) -> Bool in
                     return firstDevice.connected && !secondDevice.connected
@@ -187,14 +187,14 @@ class SelectPhotonViewController: UITableViewController, SparkSetupMainControlle
                                     return false
                                 }
                             }
-                            // Second device doesn't have variables
+                                // Second device doesn't have variables
                             else
                             {
                                 // First device is potentially running e131. Second isn't. Keep the order the same
                                 return true
                             }
                         }
-                        // First device doesn't have variables
+                            // First device doesn't have variables
                         else
                         {
                             // Second device has variables
@@ -207,7 +207,7 @@ class SelectPhotonViewController: UITableViewController, SparkSetupMainControlle
                                     return false
                                 }
                             }
-                            // Second device doesn't have variables
+                                // Second device doesn't have variables
                             else
                             {
                                 // Both aren't running e131. Keep the order the same
@@ -278,7 +278,7 @@ class SelectPhotonViewController: UITableViewController, SparkSetupMainControlle
                             }
                         }
                     }
-                    // If a new device has been added (oldDevice at this index is nil), insert the new device
+                        // If a new device has been added (oldDevice at this index is nil), insert the new device
                     else
                     {
                         if !hadAnUpdate
@@ -340,15 +340,15 @@ class SelectPhotonViewController: UITableViewController, SparkSetupMainControlle
             case .Core:
                 cell.deviceImageView.image = UIImage(named: "imgCore")
                 cell.deviceTypeLabel.text = "Core"
-
+                
             case .Photon: // .Photon
                 fallthrough
             default:
                 cell.deviceImageView.image = UIImage(named: "imgPhoton")
                 cell.deviceTypeLabel.text = "Photon"
-
+                
             }
-
+            
             cell.deviceIDLabel.text = device.id.uppercaseString
             
             let online = device.connected
@@ -439,10 +439,10 @@ class SelectPhotonViewController: UITableViewController, SparkSetupMainControlle
                     // update table view display to show dark/light cells with delay so that delete animation can complete nicely
                     dispatch_after(delayTime, dispatch_get_main_queue()) {
                         tableView.reloadData()
-                }}, atPosition: .Top, canBeDismissedByUser: true)
-            }
+                    }}, atPosition: .Top, canBeDismissedByUser: true)
         }
-        
+    }
+    
     override func tableView(tableView: UITableView, titleForDeleteConfirmationButtonForRowAtIndexPath indexPath: NSIndexPath) -> String? {
         return "Unclaim"
     }
@@ -482,7 +482,7 @@ class SelectPhotonViewController: UITableViewController, SparkSetupMainControlle
             {
                 TSMessage.showNotificationWithTitle("Success", subtitle: "You successfully added a new device to your account. Device is named \(device.name).", type: .Success)
                 self.photonSelectionTableView.reloadData()
-
+                
             }
         }
         else
@@ -491,10 +491,11 @@ class SelectPhotonViewController: UITableViewController, SparkSetupMainControlle
         }
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath)
+    {
         TSMessage.dismissActiveNotification()
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
-
+        
         if self.devices.count == 0
         {
             switch indexPath.row
@@ -508,26 +509,26 @@ class SelectPhotonViewController: UITableViewController, SparkSetupMainControlle
         }
         else
         {
-            let device: SparkDevice = self.devices[indexPath.row]
-            var deviceE131FirmwareVersion: String
-            if let fVersion = device.e131FirmwareVersion
+            switch(indexPath.row)
             {
-                deviceE131FirmwareVersion = fVersion
-            }
-            else
-            {
-                deviceE131FirmwareVersion = "Not"
-            }
-            
-            switch indexPath.row
-            {
-            case 0...self.devices.count-1 :
+            case 0...self.devices.count - 1:
+                let device: SparkDevice = self.devices[indexPath.row]
+                var deviceE131FirmwareVersion: String
+                if let fVersion = device.e131FirmwareVersion
+                {
+                    deviceE131FirmwareVersion = fVersion
+                }
+                else
+                {
+                    deviceE131FirmwareVersion = "Not"
+                }
+                
                 tableView.deselectRowAtIndexPath(indexPath, animated: false)
                 
                 if device.isFlashing || self.deviceIDflashingDict.keys.contains(device.id)
                 {
                     TSMessage.showNotificationWithTitle("Device is being flashed", subtitle: "Device is currently being flashed, please wait for the process to finish.", type: .Warning)
-
+                    
                 }
                 else if device.connected
                 {
@@ -599,7 +600,7 @@ class SelectPhotonViewController: UITableViewController, SparkSetupMainControlle
                 self.showSparkCoreAppPopUp()
             default :
                 break
-        }
+            }
         }
     }
     
@@ -669,7 +670,7 @@ class SelectPhotonViewController: UITableViewController, SparkSetupMainControlle
         if let navController = self.navigationController {
             navController.popViewControllerAnimated(true)
         }
-
+        
     }
     
     func generateDeviceName() -> String
