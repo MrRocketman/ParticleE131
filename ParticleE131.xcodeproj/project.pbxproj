@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1A185D861C1FD99300B31C90 /* photon_firmware_0000000012.bin in Resources */ = {isa = PBXBuildFile; fileRef = 1A185D851C1FD99300B31C90 /* photon_firmware_0000000012.bin */; };
 		1A3916631BFC0FE00094981D /* photon_firmware_000000000a.bin in Resources */ = {isa = PBXBuildFile; fileRef = 1A3916621BFC0FE00094981D /* photon_firmware_000000000a.bin */; };
 		1A3916671BFC10650094981D /* photon_firmware_000000000b.bin in Resources */ = {isa = PBXBuildFile; fileRef = 1A3916661BFC10650094981D /* photon_firmware_000000000b.bin */; };
 		1A3916691BFC526A0094981D /* photon_firmware_000000000c.bin in Resources */ = {isa = PBXBuildFile; fileRef = 1A3916681BFC526A0094981D /* photon_firmware_000000000c.bin */; };
@@ -43,6 +44,7 @@
 
 /* Begin PBXFileReference section */
 		11E94C4837B96B025C60BE2B /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A185D851C1FD99300B31C90 /* photon_firmware_0000000012.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = photon_firmware_0000000012.bin; sourceTree = "<group>"; };
 		1A3916621BFC0FE00094981D /* photon_firmware_000000000a.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = photon_firmware_000000000a.bin; sourceTree = "<group>"; };
 		1A3916661BFC10650094981D /* photon_firmware_000000000b.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = photon_firmware_000000000b.bin; sourceTree = "<group>"; };
 		1A3916681BFC526A0094981D /* photon_firmware_000000000c.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = photon_firmware_000000000c.bin; sourceTree = "<group>"; };
@@ -205,6 +207,7 @@
 				1A3916701C02A8800094981D /* photon_firmware_000000000f.bin */,
 				1A3916721C02C2910094981D /* photon_firmware_0000000010.bin */,
 				1AFD694B1C0AE01E00E27B33 /* photon_firmware_0000000011.bin */,
+				1A185D851C1FD99300B31C90 /* photon_firmware_0000000012.bin */,
 				50B1254F1AE06CF4003C29DC /* Images.xcassets */,
 				5067A0CE1B30EBB500A87D71 /* photon_wifi.mp4 */,
 				50B1254C1AE06CF4003C29DC /* Main.storyboard */,
@@ -306,6 +309,7 @@
 				1A39166B1BFEE2BB0094981D /* photon_firmware_000000000d.bin in Resources */,
 				1A3916731C02C2910094981D /* photon_firmware_0000000010.bin in Resources */,
 				5014D1F01AE88D0B00725BA8 /* Gotham-Light.otf in Resources */,
+				1A185D861C1FD99300B31C90 /* photon_firmware_0000000012.bin in Resources */,
 				5055653E1AF2D3150099F493 /* Gotham-XLight.otf in Resources */,
 				50B125501AE06CF4003C29DC /* Images.xcassets in Resources */,
 				50F62D9A1AE0721200109F33 /* Gotham-Medium.otf in Resources */,
